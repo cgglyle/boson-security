@@ -11,17 +11,10 @@ import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.oauth2.core.AuthorizationGrantType
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod
-import org.springframework.security.oauth2.core.oidc.OidcScopes
 import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
 import java.security.KeyPair
@@ -51,40 +44,18 @@ class AuthorizationSecurityConfig {
     @Throws(Exception::class)
     fun webSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.authorizeHttpRequests {
-            it.requestMatchers("/auth/**").permitAll()
+            it.requestMatchers("/auth/**", "/client/**").permitAll()
             it.anyRequest().authenticated()
         }.formLogin(Customizer.withDefaults())
         http.csrf {
-            it.ignoringRequestMatchers("/auth/**")
+            it.ignoringRequestMatchers("/auth/**", "/client/**")
         }
         return http.build()
     }
 
-
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
-    }
-
-    @Bean
-    fun registeredClientRepository(): RegisteredClientRepository {
-        val registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("client")
-            .clientSecret(passwordEncoder().encode("secret"))
-            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-            .redirectUri("https://oauthdebugger.com/debug")
-            .scope(OidcScopes.OPENID)
-            .clientSettings(clientSettings())
-            .build()
-        return InMemoryRegisteredClientRepository(registeredClient)
-    }
-
-    @Bean
-    fun clientSettings(): ClientSettings {
-        return ClientSettings.builder().requireProofKey(true).build()
     }
 
     @Bean
