@@ -1,10 +1,5 @@
 server:
   port: 9001
-logging:
-  level:
-    org.springframework.security: TRACE
-    org.springframework.security.oauth2: TRACE
-
 
 spring:
   jpa:
@@ -16,3 +11,6 @@ spring:
       hibernate:
         show_sql: true
     open-in-view: false
+  mvc:
+    problem-details:
+      enabled: true
