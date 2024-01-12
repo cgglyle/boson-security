@@ -17,6 +17,13 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import top.cgglyle.security.boson.security.config.csrf.CsrfCookieFilter
+import top.cgglyle.security.boson.security.config.csrf.SpaCsrfTokenRequestHandler
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.NoSuchAlgorithmException
@@ -43,13 +50,6 @@ class AuthorizationSecurityConfig {
     @Order(2)
     @Throws(Exception::class)
     fun webSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authorizeHttpRequests {
-            it.requestMatchers("/auth/**", "/client/**").permitAll()
-            it.anyRequest().authenticated()
-        }.formLogin(Customizer.withDefaults())
-        http.csrf {
-            it.ignoringRequestMatchers("/auth/**", "/client/**")
-        }
         http
             .authorizeHttpRequests {
                 it.anyRequest().authenticated()
@@ -98,7 +98,26 @@ class AuthorizationSecurityConfig {
                 }
             }
 
+        http
+            .csrf {
+                it.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                it.csrfTokenRequestHandler(SpaCsrfTokenRequestHandler())
+            }
+        http.addFilterAfter(CsrfCookieFilter(), BasicAuthenticationFilter::class.java)
         return http.build()
+    }
+
+    @Bean
+    fun corsConfigurationSource(): CorsConfigurationSource {
+        val configuration = CorsConfiguration()
+        configuration.addAllowedOrigin("http://localhost:4200")
+        configuration.addAllowedMethod("*")
+        configuration.addAllowedHeader("*")
+        configuration.allowCredentials = true
+
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", configuration)
+        return source
     }
 
     @Bean
