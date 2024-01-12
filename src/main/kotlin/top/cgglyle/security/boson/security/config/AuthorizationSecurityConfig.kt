@@ -50,6 +50,54 @@ class AuthorizationSecurityConfig {
         http.csrf {
             it.ignoringRequestMatchers("/auth/**", "/client/**")
         }
+        http
+            .authorizeHttpRequests {
+                it.anyRequest().authenticated()
+            }
+            .formLogin {
+                it.loginProcessingUrl("/api/login")
+                    .usernameParameter("username")
+                    .passwordParameter("password")
+                    .successHandler { _, response, _ ->
+                        run {
+                            response.writer.append("OK")
+                            response.status = 200
+                        }
+                    }
+                    .failureHandler { _, response, _ ->
+                        run {
+                            response.writer.append("Authentication failure")
+                            response.status = 401
+                            response.flushBuffer()
+                        }
+                    }
+                    .permitAll()
+            }
+            .logout {
+                it.logoutUrl("/api/logout")
+                it.logoutSuccessHandler { _, response, _ ->
+                    run {
+                        response.status = 200
+                        response.writer.append("OK")
+                    }
+                }
+                it.permitAll()
+            }
+            .exceptionHandling {
+                it.accessDeniedHandler { _, response, _ ->
+                    run {
+                        response.writer.append("Access Denied")
+                        response.status = 403
+                    }
+                }
+                it.authenticationEntryPoint { _, response, _ ->
+                    run {
+                        response.writer.append("Unauthorized! Please login!")
+                        response.status = 401
+                    }
+                }
+            }
+
         return http.build()
     }
 
