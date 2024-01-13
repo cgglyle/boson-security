@@ -18,7 +18,7 @@ logging:
   level:
     web: debug
     org.springframework.security: debug
-    top.cgglyle.security.boson.security: debug
+    top.cgglyle.boson.security: debug
 springdoc:
   swagger-ui:
     csrf:

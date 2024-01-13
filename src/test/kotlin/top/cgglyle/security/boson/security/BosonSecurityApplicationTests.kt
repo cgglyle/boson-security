@@ -1,4 +1,4 @@
-package top.cgglyle.security.boson.security
+package top.cgglyle.boson.security
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
