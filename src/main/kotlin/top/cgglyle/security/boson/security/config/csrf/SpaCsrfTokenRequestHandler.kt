@@ -2,6 +2,8 @@ package top.cgglyle.security.boson.security.config.csrf
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler
 import org.springframework.security.web.csrf.CsrfTokenRequestHandler
@@ -10,6 +12,7 @@ import org.springframework.util.StringUtils
 import java.util.function.Supplier
 
 class SpaCsrfTokenRequestHandler : CsrfTokenRequestAttributeHandler() {
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
     private val delegate: CsrfTokenRequestHandler = XorCsrfTokenRequestAttributeHandler()
 
     override fun handle(request: HttpServletRequest, response: HttpServletResponse, csrfToken: Supplier<CsrfToken>) {
@@ -20,7 +23,7 @@ class SpaCsrfTokenRequestHandler : CsrfTokenRequestAttributeHandler() {
         delegate.handle(request, response, csrfToken)
     }
 
-    override fun resolveCsrfTokenValue(request: HttpServletRequest, csrfToken: CsrfToken): String {
+    override fun resolveCsrfTokenValue(request: HttpServletRequest, csrfToken: CsrfToken): String? {
         /*
          * If the request contains a request header, use CsrfTokenRequestAttributeHandler
          * to resolve the CsrfToken. This applies when a single-page application includes
@@ -36,7 +39,12 @@ class SpaCsrfTokenRequestHandler : CsrfTokenRequestAttributeHandler() {
              * when a server-side rendered form includes the _csrf request parameter as a
              * hidden input.
              */
-            delegate.resolveCsrfTokenValue(request, csrfToken)
+            return try {
+                delegate.resolveCsrfTokenValue(request, csrfToken)
+            } catch (ex: NullPointerException) {
+                logger.debug("Xor Csrf Token Failed")
+                null
+            }
         }
     }
 }
