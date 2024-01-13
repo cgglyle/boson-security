@@ -5,7 +5,7 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
 import org.springframework.security.core.GrantedAuthority
-import top.cgglyle.security.boson.security.common.AbstractIDEntity
+import top.cgglyle.security.boson.security.common.entity.AbstractIDEntity
 import top.cgglyle.security.boson.security.domain.RoleName
 
 @Entity

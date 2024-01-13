@@ -1,4 +1,4 @@
-package top.cgglyle.security.boson.security.common
+package top.cgglyle.security.boson.security.common.entity
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.NoRepositoryBean

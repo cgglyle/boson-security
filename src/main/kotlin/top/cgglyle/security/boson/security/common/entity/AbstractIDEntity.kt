@@ -1,10 +1,6 @@
-package top.cgglyle.security.boson.security.common
+package top.cgglyle.security.boson.security.common.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.MappedSuperclass
+import jakarta.persistence.*
 
 @MappedSuperclass
 abstract class AbstractIDEntity(
@@ -12,7 +8,12 @@ abstract class AbstractIDEntity(
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "database_id", nullable = false, updatable = false)
     val id: Long = -1
-){
+) {
+    @Version
+    @Column(name = "version")
+    var version: Int? = null
+        protected set
+
     override fun toString(): String {
         return "AbstractIDEntity(id='$id')"
     }
