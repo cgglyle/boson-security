@@ -4,14 +4,14 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.auth.domain.entity.LocalAuthEntity
-import top.cgglyle.boson.security.auth.domain.LocalAuthRepository
+import top.cgglyle.boson.security.auth.domain.entity.UsernameAuthEntity
+import top.cgglyle.boson.security.auth.domain.UsernameAuthRepository
 import top.cgglyle.boson.security.service.UserService
 
 @RestController
 @RequestMapping("/api/users")
 class UserController(
-    private val localAuthRepository: LocalAuthRepository,
+    private val usernameAuthRepository: UsernameAuthRepository,
     private val userService: UserService,
 ) {
 //    @GetMapping()
@@ -21,8 +21,8 @@ class UserController(
 //    }
 
     @GetMapping("{id:\\d+}")
-    fun getUserinfoById(@PathVariable id: String): LocalAuthEntity? {
-        val userEntityOperation = localAuthRepository.findById(id)
+    fun getUserinfoById(@PathVariable id: String): UsernameAuthEntity? {
+        val userEntityOperation = usernameAuthRepository.findById(id)
         if (userEntityOperation.isEmpty) {
             return null
         }

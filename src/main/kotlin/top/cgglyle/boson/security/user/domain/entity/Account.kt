@@ -1,25 +1,32 @@
 package top.cgglyle.boson.security.user.domain.entity
 
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import org.hibernate.validator.constraints.Length
 import org.springframework.security.core.GrantedAuthority
 import top.cgglyle.boson.security.common.entity.AbstractModifiedAuditingEntity
 import top.cgglyle.boson.security.common.exception.IllegalArgumentException
 import top.cgglyle.boson.security.domain.entity.RoleEntity
+import top.cgglyle.boson.security.user.domain.command.CreateAccountCommand
 import java.util.*
 
 @Entity
 @Table(name = "sys_account")
-class Account(
-    username: String,
-    roles: Set<RoleEntity>,
-    isAccountNonLocked: Boolean = true,
-    isEnable: Boolean = true,
-) : AbstractModifiedAuditingEntity() {
+class Account(command: CreateAccountCommand) : AbstractModifiedAuditingEntity() {
     @Column(name = "uid", updatable = false, nullable = false, unique = true)
     val uid: String = UUID.randomUUID().toString()
 
+    @NotBlank
+    @Length(max = 64)
     @Column(name = "username", nullable = false, unique = true)
     var username: String = ""
+        protected set
+
+    @Email
+    @Length(max = 64)
+    @Column(name = "email", unique = true)
+    var email: String = ""
         protected set
 
     @ManyToMany(cascade = [CascadeType.MERGE], fetch = FetchType.EAGER)
@@ -35,7 +42,7 @@ class Account(
         protected set
 
     @Column(name = "account_non_locked", nullable = false)
-    final var accountNonLocked: Boolean = true
+    var accountNonLocked: Boolean = true
         protected set
 
     @Column(name = "credentials_non_expired", nullable = false)
@@ -43,20 +50,29 @@ class Account(
         protected set
 
     @Column(name = "enable", nullable = false)
-    final var enable: Boolean = true
+    var enable: Boolean = true
         protected set
 
     init {
-        this.username = username
+        if (command.username.isNullOrBlank() && command.email.isNullOrBlank()) {
+            throw IllegalArgumentException("Try create account, but both username and email are null.")
+        }
+        this.username = if (command.username.isNullOrBlank()) {
+            UUID.randomUUID().toString()
+        } else command.username
         this.roleEntities.clear()
-        this.roleEntities.addAll(roles)
-        this.accountNonLocked = isAccountNonLocked
-        this.enable = isEnable
+        this.roleEntities.addAll(command.roles)
+        if (!command.email.isNullOrBlank()) {
+            this.email = command.email
+        }
+        this.accountNonLocked = command.isAccountNonLocked
+        this.enable = command.isEnable
     }
+
 
     companion object {
         fun defaultAccount(): Account {
-            return Account(UUID.randomUUID().toString(), mutableSetOf(RoleEntity()))
+            return Account(CreateAccountCommand(UUID.randomUUID().toString(), null, mutableSetOf(RoleEntity())))
         }
     }
 

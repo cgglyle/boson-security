@@ -40,7 +40,8 @@ class InitProjectConfig(
         userService.createUser(
             CreateUserQuery(
                 "user",
-                "user",
+                null,
+                "username",
                 mutableSetOf("ADMIN")
             )
         )
