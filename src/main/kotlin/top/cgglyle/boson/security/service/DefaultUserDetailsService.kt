@@ -5,16 +5,16 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import top.cgglyle.boson.security.repository.UserRepository
+import top.cgglyle.boson.security.auth.domain.LocalAuthRepository
 
 @Service
 class DefaultUserDetailsService(
-    private val userRepository: UserRepository,
+    private val localAuthRepository: LocalAuthRepository,
 ) : UserDetailsService {
 
     @Transactional
     override fun loadUserByUsername(username: String): UserDetails {
-        return userRepository.findUserEntityByUsername(username)
+        return localAuthRepository.findByAccountUsername(username)
             ?: throw UsernameNotFoundException("Username: $username does not found")
     }
 }

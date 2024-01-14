@@ -4,7 +4,7 @@ import top.cgglyle.boson.security.domain.entity.RoleEntity
 import java.io.Serializable
 
 /**
- * DTO for {@link top.cgglyle.boson.security.domain.entity.UserEntity}
+ * DTO for {@link top.cgglyle.boson.security.domain.entity.auth.UserEntity}
  */
 data class CreateUserCommand(
     val username: String = "",

@@ -4,19 +4,19 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import top.cgglyle.boson.security.domain.RoleName
 import top.cgglyle.boson.security.domain.command.CreateUserCommand
-import top.cgglyle.boson.security.domain.entity.UserEntity
+import top.cgglyle.boson.security.auth.domain.entity.LocalAuthEntity
 import top.cgglyle.boson.security.repository.RoleRepository
-import top.cgglyle.boson.security.repository.UserRepository
+import top.cgglyle.boson.security.auth.domain.LocalAuthRepository
 import top.cgglyle.boson.security.web.query.CreateUserQuery
 import java.lang.RuntimeException
 
 @Service
 class UserService(
-    private val userRepository: UserRepository,
+    private val localAuthRepository: LocalAuthRepository,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
 ) {
-    fun createUser(query: CreateUserQuery) {
+    fun createUser(query: CreateUserQuery): LocalAuthEntity {
         val roleNames = query.roleNames
         val roleEntities = roleNames.map {
             roleRepository.findRoleEntityByRoleName(RoleName.valueOf(it))
@@ -27,7 +27,7 @@ class UserService(
             passwordEncoder.encode(query.password),
             roleEntities,
         )
-        val userEntity = UserEntity(command)
-        userRepository.save(userEntity)
+        val localAuthEntity = LocalAuthEntity(command)
+        return localAuthRepository.save(localAuthEntity)
     }
 }

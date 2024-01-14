@@ -9,7 +9,7 @@ import top.cgglyle.boson.security.common.entity.AbstractIDEntity
 import top.cgglyle.boson.security.domain.RoleName
 
 @Entity
-@Table(name = "app_role")
+@Table(name = "sys_role")
 class RoleEntity(
     @Enumerated(EnumType.STRING)
     val roleName: RoleName = RoleName.ANONYMOUS
