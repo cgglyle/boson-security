@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.2.1"
     id("io.spring.dependency-management") version "1.1.4"
+    id("jacoco")
     kotlin("jvm") version "1.9.21"
     kotlin("plugin.spring") version "1.9.21"
     kotlin("plugin.jpa") version "1.9.21"
@@ -12,6 +13,12 @@ plugins {
 
 group = "top.cgglyle.security"
 version = "0.0.1-SNAPSHOT"
+
+
+jacoco {
+    toolVersion = "0.8.9"
+}
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -65,6 +72,16 @@ dependencyManagement {
         mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
     }
 }
+
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+}
+
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
