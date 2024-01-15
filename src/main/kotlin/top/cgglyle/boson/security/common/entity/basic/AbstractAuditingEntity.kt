@@ -22,6 +22,6 @@ abstract class AbstractAuditingEntity(
 
     @CreatedDate
     @Column(name = "created_date", updatable = false, nullable = false)
-    var createdDate: Instant? = Instant.now()
+    var createdDate: Instant = Instant.now()
 ) : AbstractIDEntity() {
 }

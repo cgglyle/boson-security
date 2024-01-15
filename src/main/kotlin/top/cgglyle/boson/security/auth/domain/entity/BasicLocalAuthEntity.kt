@@ -18,10 +18,6 @@ abstract class BasicLocalAuthEntity(
     val passwordEntity: PasswordEntity,
 ) : BasicAuthEntity(account), UserDetails {
 
-    fun setPassword(password: String) {
-        this.passwordEntity.addPassword(password, super.createdBy)
-    }
-
     override fun getPassword(): String {
         return this.passwordEntity.getLastedPassword().password
     }

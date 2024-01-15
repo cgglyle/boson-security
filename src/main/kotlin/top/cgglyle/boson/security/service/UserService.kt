@@ -16,7 +16,6 @@ import top.cgglyle.boson.security.repository.RoleRepository
 import top.cgglyle.boson.security.user.domain.command.CreateAccountCommand
 import top.cgglyle.boson.security.user.domain.entity.Account
 import top.cgglyle.boson.security.user.domain.entity.AccountRepository
-import top.cgglyle.boson.security.utils.CurrentLoginUidUtil
 import top.cgglyle.boson.security.web.query.CreateUserQuery
 
 @Service
@@ -49,8 +48,7 @@ class UserService(
         )
         val account = accountRepository.save(Account(command))
 
-        val passwordEntity = PasswordEntity()
-        passwordEntity.addPassword(passwordEncoder.encode(query.password), CurrentLoginUidUtil.getCurrentLoginUid())
+        val passwordEntity = PasswordEntity(query.password, passwordEncoder)
 
         if (!query.username.isNullOrBlank()) {
             usernameAuthRepository.save(UsernameAuthEntity(passwordEntity, account))
