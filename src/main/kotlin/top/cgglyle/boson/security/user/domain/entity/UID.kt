@@ -2,7 +2,7 @@ package top.cgglyle.boson.security.user.domain.entity
 
 import jakarta.persistence.Embeddable
 import java.io.Serializable
-import java.util.UUID
+import java.util.*
 
 @Embeddable
 data class UID(

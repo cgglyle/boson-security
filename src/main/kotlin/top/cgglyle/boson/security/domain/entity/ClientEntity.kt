@@ -33,7 +33,7 @@ class ClientEntity() : AbstractIDEntity() {
 
     private var requireProofKey: Boolean = false
 
-    constructor(command: CreateClientCommand): this() {
+    constructor(command: CreateClientCommand) : this() {
         this.clientId = command.clientId
         this.clientSecret = command.clientSecret
         this.authenticationMethods.addAll(command.authenticationMethods)

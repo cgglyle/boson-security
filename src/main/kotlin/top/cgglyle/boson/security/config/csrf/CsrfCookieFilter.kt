@@ -11,7 +11,11 @@ import java.io.IOException
 class CsrfCookieFilter : OncePerRequestFilter() {
 
     @Throws(ServletException::class, IOException::class)
-    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
         val csrfToken = request.getAttribute("_csrf") as CsrfToken
         // Render the token value to a cookie by causing the deferred token to be loaded
         csrfToken.token

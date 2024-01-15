@@ -13,7 +13,7 @@ import top.cgglyle.boson.security.domain.RoleName
 class RoleEntity(
     @Enumerated(EnumType.STRING)
     val roleName: RoleName = RoleName.ANONYMOUS
-): AbstractIDEntity(), GrantedAuthority {
+) : AbstractIDEntity(), GrantedAuthority {
     override fun getAuthority(): String {
         return roleName.name
     }

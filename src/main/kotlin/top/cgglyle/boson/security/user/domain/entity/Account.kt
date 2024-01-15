@@ -15,7 +15,10 @@ import java.util.*
 @Table(name = "sys_account")
 class Account(command: CreateAccountCommand) : AbstractModifiedAuditingEntity() {
     @Embedded
-    @AttributeOverride(name = "value", column = Column(name = "uid", updatable = false, nullable = false, unique = true))
+    @AttributeOverride(
+        name = "value",
+        column = Column(name = "uid", updatable = false, nullable = false, unique = true)
+    )
     val uid: UID = UID.randomUID()
 
     @NotBlank

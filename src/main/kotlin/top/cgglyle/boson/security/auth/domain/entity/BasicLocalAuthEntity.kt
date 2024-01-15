@@ -1,10 +1,6 @@
 package top.cgglyle.boson.security.auth.domain.entity
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.MappedSuperclass
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Transient
+import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import top.cgglyle.boson.security.common.entity.password.PasswordEntity
