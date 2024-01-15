@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Length
 import org.springframework.security.core.GrantedAuthority
-import top.cgglyle.boson.security.common.entity.AbstractModifiedAuditingEntity
+import top.cgglyle.boson.security.common.entity.basic.AbstractModifiedAuditingEntity
 import top.cgglyle.boson.security.common.exception.IllegalArgumentException
 import top.cgglyle.boson.security.domain.entity.RoleEntity
 import top.cgglyle.boson.security.user.domain.command.CreateAccountCommand
@@ -14,8 +14,9 @@ import java.util.*
 @Entity
 @Table(name = "sys_account")
 class Account(command: CreateAccountCommand) : AbstractModifiedAuditingEntity() {
-    @Column(name = "uid", updatable = false, nullable = false, unique = true)
-    val uid: String = UUID.randomUUID().toString()
+    @Embedded
+    @AttributeOverride(name = "value", column = Column(name = "uid", updatable = false, nullable = false, unique = true))
+    val uid: UID = UID.randomUID()
 
     @NotBlank
     @Length(max = 64)

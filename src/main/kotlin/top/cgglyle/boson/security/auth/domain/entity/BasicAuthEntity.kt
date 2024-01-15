@@ -4,7 +4,7 @@ import jakarta.persistence.CascadeType
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.MappedSuperclass
-import top.cgglyle.boson.security.common.entity.AbstractModifiedAuditingEntity
+import top.cgglyle.boson.security.common.entity.basic.AbstractModifiedAuditingEntity
 import top.cgglyle.boson.security.user.domain.entity.Account
 
 @MappedSuperclass
