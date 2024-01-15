@@ -1,0 +1,23 @@
+name: Build and deploy JAR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java version
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+      - name: Run tests
+        run: ./gradlew test 
+        
+      - name: Build jar
+        if: success() # only runs if all tests pass
+        run: ./gradlew bootJar # mvn package work just fine for maven
