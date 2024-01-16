@@ -30,6 +30,16 @@ configurations {
     }
 }
 
+tasks.processResources {
+    filesMatching("application.yaml") {
+        expand(project.properties)
+    }
+}
+
+springBoot {
+    buildInfo()
+}
+
 repositories {
     mavenCentral()
 }
