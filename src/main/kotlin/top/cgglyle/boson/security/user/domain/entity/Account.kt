@@ -61,16 +61,16 @@ class Account(command: CreateAccountCommand) : AbstractModifiedAuditingEntity() 
         if (command.username.isNullOrBlank() && command.email.isNullOrBlank()) {
             throw IllegalArgumentException("Try create account, but both username and email are null.")
         }
-        this.username = if (command.username.isNullOrBlank()) {
+        (if (command.username.isNullOrBlank()) {
             UUID.randomUUID().toString()
-        } else command.username
+        } else command.username).also { this.username = it }
         this.roleEntities.clear()
         this.roleEntities.addAll(command.roles)
         if (!command.email.isNullOrBlank()) {
-            this.email = command.email
+            command.email.also { this.email = it }
         }
-        this.accountNonLocked = command.isAccountNonLocked
-        this.enable = command.isEnable
+        command.isAccountNonLocked.also { this.accountNonLocked = it }
+        command.isEnable.also { this.enable = it }
     }
 
 

@@ -19,6 +19,7 @@ package top.cgglyle.boson.security.common.entity.password
 import jakarta.persistence.*
 import org.hibernate.proxy.HibernateProxy
 import top.cgglyle.boson.security.common.entity.basic.AbstractValueEntity
+import java.util.Objects
 
 @Entity
 @Table(name = "sys_password_item")
@@ -29,6 +30,11 @@ class PasswordItem(
     @JoinColumn(name = "password_entity_database_id")
     private val passwordEntity: PasswordEntity,
 ) : AbstractValueEntity() {
+
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id , password = $password)"
+    }
+
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null) return false
@@ -39,14 +45,9 @@ class PasswordItem(
         if (thisEffectiveClass != oEffectiveClass) return false
         other as PasswordItem
 
-        return id == other.id && password == other.password
+        return id == other.id && Objects.equals(password, other.password)
     }
 
     final override fun hashCode(): Int =
         if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass.hashCode() else javaClass.hashCode()
-
-    @Override
-    override fun toString(): String {
-        return this::class.simpleName + "(id = $id , password = $password)"
-    }
 }

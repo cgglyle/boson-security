@@ -39,8 +39,8 @@ class DefaultLocalUserDetailsManagerTest {
     @InjectMockKs
     lateinit var defaultLocalUserDetailsManager: DefaultLocalUserDetailsManager
 
-    val okUsername = "OK"
-    val failUsername = "Fail"
+    private val okUsername = "OK"
+    private val failUsername = "Fail"
 
     @BeforeEach
     fun setUp() {
