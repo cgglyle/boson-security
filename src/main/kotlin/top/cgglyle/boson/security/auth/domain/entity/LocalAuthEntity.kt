@@ -3,19 +3,29 @@ package top.cgglyle.boson.security.auth.domain.entity
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.password.PasswordEncoder
 import top.cgglyle.boson.security.common.entity.password.PasswordEntity
 import top.cgglyle.boson.security.user.domain.entity.Account
 
-@MappedSuperclass
-abstract class BasicLocalAuthEntity(
+@Entity
+@Table(name = "sys_local_auth")
+class LocalAuthEntity(
     account: Account,
     @JoinColumn(name = "password_entity_database_id", nullable = false)
     @OneToOne(cascade = [CascadeType.ALL], optional = false, orphanRemoval = true)
-    val passwordEntity: PasswordEntity,
+    protected val passwordEntity: PasswordEntity,
 ) : BasicAuthEntity(account), UserDetails {
+
+    fun addPassword(newPassword: String, passwordEncoder: PasswordEncoder) {
+       passwordEntity.addPassword(newPassword, passwordEncoder)
+    }
 
     override fun getPassword(): String {
         return this.passwordEntity.getLastedPassword().password
+    }
+
+    override fun getUsername(): String {
+        return super.account.username
     }
 
     @Transient
@@ -42,6 +52,4 @@ abstract class BasicLocalAuthEntity(
     override fun isEnabled(): Boolean {
         return super.account.enable
     }
-
-    abstract fun formOtherLocalAuth(basicLocalAuthEntity: BasicLocalAuthEntity): BasicLocalAuthEntity
 }

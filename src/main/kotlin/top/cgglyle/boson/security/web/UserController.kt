@@ -4,15 +4,13 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.auth.domain.UsernameAuthRepository
-import top.cgglyle.boson.security.auth.domain.entity.UsernameAuthEntity
-import top.cgglyle.boson.security.service.UserService
+import top.cgglyle.boson.security.user.domain.entity.Account
+import top.cgglyle.boson.security.user.domain.entity.AccountRepository
 
 @RestController
 @RequestMapping("/api/users")
 class UserController(
-    private val usernameAuthRepository: UsernameAuthRepository,
-    private val userService: UserService,
+    private val accountRepository: AccountRepository,
 ) {
 //    @GetMapping()
 //    fun getAllUserinfo(): Page<Profile> {
@@ -21,8 +19,8 @@ class UserController(
 //    }
 
     @GetMapping("{id:\\d+}")
-    fun getUserinfoById(@PathVariable id: String): UsernameAuthEntity? {
-        val userEntityOperation = usernameAuthRepository.findById(id)
+    fun getUserinfoById(@PathVariable id: String): Account? {
+        val userEntityOperation = accountRepository.findById(id)
         if (userEntityOperation.isEmpty) {
             return null
         }

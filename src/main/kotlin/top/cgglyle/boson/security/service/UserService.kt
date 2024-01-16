@@ -1,12 +1,10 @@
 package top.cgglyle.boson.security.service
 
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.UserDetailsManager
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import top.cgglyle.boson.security.auth.domain.EmailAuthRepository
-import top.cgglyle.boson.security.auth.domain.UsernameAuthRepository
-import top.cgglyle.boson.security.auth.domain.entity.EmailAuthEntity
-import top.cgglyle.boson.security.auth.domain.entity.UsernameAuthEntity
+import top.cgglyle.boson.security.auth.domain.entity.LocalAuthEntity
 import top.cgglyle.boson.security.common.entity.password.PasswordEntity
 import top.cgglyle.boson.security.common.exception.DataExistException
 import top.cgglyle.boson.security.common.exception.DataNotFoundException
@@ -20,11 +18,10 @@ import top.cgglyle.boson.security.web.query.CreateUserQuery
 
 @Service
 class UserService(
-    private val usernameAuthRepository: UsernameAuthRepository,
-    private val emailAuthRepository: EmailAuthRepository,
     private val roleRepository: RoleRepository,
     private val passwordEncoder: PasswordEncoder,
     private val accountRepository: AccountRepository,
+    private val userDetailsManager: UserDetailsManager,
 ) {
 
     @Transactional
@@ -50,14 +47,9 @@ class UserService(
 
         val passwordEntity = PasswordEntity(query.password, passwordEncoder)
 
-        if (!query.username.isNullOrBlank()) {
-            usernameAuthRepository.save(UsernameAuthEntity(passwordEntity, account))
-        }
+        val localAuthEntity = LocalAuthEntity(account, passwordEntity)
 
-
-        if (!query.email.isNullOrBlank()) {
-            emailAuthRepository.save(EmailAuthEntity(passwordEntity, account))
-        }
+        userDetailsManager.createUser(localAuthEntity)
 
         return account
     }

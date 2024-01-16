@@ -1,6 +1,8 @@
 package top.cgglyle.boson.security.common.entity.password
 
 import jakarta.persistence.*
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.password.PasswordEncoder
 import top.cgglyle.boson.security.common.entity.basic.AbstractModifiedAuditingEntity
 import top.cgglyle.boson.security.common.exception.ClientException
@@ -16,7 +18,7 @@ class PasswordEntity(newPass: String, passwordEncoder: PasswordEncoder) : Abstra
         addPassword(newPass, passwordEncoder)
     }
 
-    private fun addPassword(password: String, passwordEncoder: PasswordEncoder): PasswordItem {
+    fun addPassword(password: String, passwordEncoder: PasswordEncoder): PasswordItem {
         val encodePass = passwordEncoder.encode(password)
         val passwordItem = PasswordItem(encodePass, this)
         this.passwordHistoryList.add(passwordItem)
