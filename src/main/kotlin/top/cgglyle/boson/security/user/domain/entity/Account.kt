@@ -9,6 +9,7 @@ import top.cgglyle.boson.security.common.entity.basic.AbstractModifiedAuditingEn
 import top.cgglyle.boson.security.common.exception.IllegalArgumentException
 import top.cgglyle.boson.security.domain.entity.RoleEntity
 import top.cgglyle.boson.security.user.domain.command.CreateAccountCommand
+import top.cgglyle.boson.security.user.domain.entity.event.CreateAccountEvent
 import java.util.*
 
 @Entity
@@ -71,6 +72,8 @@ class Account(command: CreateAccountCommand) : AbstractModifiedAuditingEntity() 
         }
         command.isAccountNonLocked.also { this.accountNonLocked = it }
         command.isEnable.also { this.enable = it }
+
+        super.registerEvent(CreateAccountEvent(this))
     }
 
 

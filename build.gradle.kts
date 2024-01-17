@@ -50,6 +50,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.modulith:spring-modulith-starter-jdbc")
     kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
 
     implementation("org.springframework.boot:spring-boot-starter-oauth2-authorization-server")
@@ -62,7 +64,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.modulith:spring-modulith-starter-core")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.modulith:spring-modulith-starter-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.session:spring-session-jdbc")
     implementation("org.springframework.session:spring-session-data-redis")

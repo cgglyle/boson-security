@@ -29,7 +29,5 @@ class AuthController(
     }
 
     @PostMapping("logout")
-    fun logout() {
-
-    }
+    fun logout() {}
 }
