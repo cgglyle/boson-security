@@ -22,7 +22,7 @@ data class UID(
         }
 
         fun systemUID(): UID {
-            return UID("[SYSTEM UID] ${UUID.randomUUID()}")
+            return UID("[SYSTEM DEFAULT UID] ${UUID.randomUUID()}")
         }
     }
 }
