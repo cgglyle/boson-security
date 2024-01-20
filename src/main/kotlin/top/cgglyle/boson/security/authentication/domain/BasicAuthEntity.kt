@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.authentication.domain
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import jakarta.persistence.Column
+import jakarta.persistence.MappedSuperclass
+import top.cgglyle.boson.security.common.AbstractModifiedAuditingEntity
+import top.cgglyle.boson.security.common.UID
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
-}
+@MappedSuperclass
+abstract class BasicAuthEntity(
+    @Column(name = "uid", updatable = false, nullable = false, unique = true)
+    val uid: UID,
+) : AbstractModifiedAuditingEntity()

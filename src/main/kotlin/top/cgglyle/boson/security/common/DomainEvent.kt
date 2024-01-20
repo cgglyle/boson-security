@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.common
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import java.time.Instant
+import java.util.UUID
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
+/**
+ * @author: Lyle Liu
+ */
+abstract class DomainEvent(
+    val instant: Instant = Instant.now(),
+    val eventID: String = UUID.randomUUID().toString()
+
 ) {
-
-
+    override fun toString(): String {
+        return "DomainEvent(instant=$instant, eventID='$eventID')"
+    }
 }

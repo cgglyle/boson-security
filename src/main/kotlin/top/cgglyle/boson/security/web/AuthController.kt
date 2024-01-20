@@ -3,25 +3,26 @@ package top.cgglyle.boson.security.web
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import top.cgglyle.boson.security.service.UserService
-import top.cgglyle.boson.security.web.query.CreateUserQuery
+import top.cgglyle.boson.security.account.CreateAccountQuery
+import top.cgglyle.boson.security.auth.AuthUserManager
+import top.cgglyle.boson.security.auth.UidUser
+import top.cgglyle.boson.security.common.UID
 import top.cgglyle.boson.security.web.query.LoginQuery
 
 @RestController
 @RequestMapping("/api")
 @Validated
 class AuthController(
-    val userService: UserService
+    val authUserManager: AuthUserManager,
 ) {
 
-    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("register")
-    fun createUser(@RequestBody query: CreateUserQuery) {
-        userService.createUser(query)
+    fun createUser(@RequestBody query: CreateAccountQuery): UID {
+        return authUserManager.createUser(query)
     }
 
     @PostMapping(path = ["login"], consumes = [MediaType.APPLICATION_FORM_URLENCODED_VALUE])
@@ -29,5 +30,11 @@ class AuthController(
     }
 
     @PostMapping("logout")
-    fun logout() {}
+    fun logout() {
+    }
+
+    @GetMapping("userinfo")
+    fun getCurrentLoginUserDetails(): UidUser {
+        return SecurityContextHolder.getContext().authentication.principal as UidUser
+    }
 }

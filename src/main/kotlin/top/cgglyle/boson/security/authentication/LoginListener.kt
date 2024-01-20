@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.authentication
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import org.slf4j.LoggerFactory
+import org.springframework.context.event.EventListener
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent
+import org.springframework.stereotype.Service
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
+/**
+ * @author: Lyle Liu
+ */
+@Service
+class LoginListener {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
 
+    @EventListener
+    fun onLoginListener(loginSuccessEvent: AuthenticationSuccessEvent?) {
+        val authentication = loginSuccessEvent?.authentication
+        logger.info(authentication.toString())
+    }
 }

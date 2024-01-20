@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.common
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import jakarta.persistence.*
+import org.springframework.data.domain.AbstractAggregateRoot
+import java.io.Serializable
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
+@MappedSuperclass
+abstract class AbstractIDEntity(
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "database_id", nullable = false, updatable = false)
+    val id: Long = -1
+) : AbstractAggregateRoot<AbstractIDEntity>(), Serializable {
+    @Version
+    @Column(name = "version")
+    var version: Int? = null
+        protected set
 
-
+    override fun toString(): String {
+        return "AbstractIDEntity(id='$id')"
+    }
 }

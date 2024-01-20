@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.account
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import org.slf4j.LoggerFactory
+import top.cgglyle.boson.security.account.domain.Account
+import top.cgglyle.boson.security.common.DomainEvent
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
+/**
+ * @author: Lyle Liu
+ */
+data class CreateAccountEvent(
+    val account: Account
+) : DomainEvent() {
+    private val logger = LoggerFactory.getLogger(javaClass)
 
+    init {
+        logger.info("[Event] $this")
+    }
 
+    override fun toString(): String {
+        return "CreateAccountEvent(account=$account) ${super.toString()}"
+    }
 }

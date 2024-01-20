@@ -24,7 +24,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
-import top.cgglyle.boson.security.auth.domain.entity.LocalAuthEntity
+import top.cgglyle.boson.security.auth.CurrentLoginUidUtil
+import top.cgglyle.boson.security.auth.UidUser
+import top.cgglyle.boson.security.common.UID
 
 /**
  * @author: Lyle Liu
@@ -35,7 +37,7 @@ class CurrentLoginUidUtilTest {
     fun unAuthenticationShouldIsSystemUID() {
         mockkStatic(SecurityContextHolder::class)
         every { SecurityContextHolder.getContext().authentication }.returns(null)
-        mockkStatic(top.cgglyle.boson.security.user.domain.entity.UID::class)
+        mockkStatic(UID::class)
 
         // when
         val currentLoginUid = CurrentLoginUidUtil.getCurrentLoginUid()
@@ -59,15 +61,16 @@ class CurrentLoginUidUtilTest {
         val contains = currentLoginUid.value.contains("[ANONYMOUS DEFAULT UID]")
         assertTrue(contains)
     }
+
     @Test
     fun authenticationUserShouldIsUID() {
         mockkStatic(SecurityContextHolder::class)
         val authentication = mockk<Authentication>()
         every { SecurityContextHolder.getContext().authentication }.returns(authentication)
         every { authentication.isAuthenticated }.returns(true)
-        val principal = mockk<LocalAuthEntity>()
+        val principal = mockk<UidUser>()
         every { authentication.principal }.returns(principal)
-        every { principal.account.uid.value }.returns("1")
+        every { principal.uid.value }.returns("1")
 
         // when
         val currentLoginUid = CurrentLoginUidUtil.getCurrentLoginUid()

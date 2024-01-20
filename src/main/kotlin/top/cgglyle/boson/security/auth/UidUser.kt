@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.auth
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.User
+import top.cgglyle.boson.security.common.UID
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
-}
+/**
+ * @author: Lyle Liu
+ */
+class UidUser(
+    val uid: UID,
+    val usernameType: UsernameType,
+    username: String,
+    password: String,
+    enabled: Boolean,
+    accountNonExpired: Boolean,
+    credentialsNonExpired: Boolean,
+    accountNonLocked: Boolean,
+    authorities: Set<GrantedAuthority>
+) : User(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities)

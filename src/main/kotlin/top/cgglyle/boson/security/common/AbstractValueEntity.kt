@@ -14,17 +14,9 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.common
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import jakarta.persistence.MappedSuperclass
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
-}
+@MappedSuperclass
+abstract class AbstractValueEntity : AbstractAuditingEntity()

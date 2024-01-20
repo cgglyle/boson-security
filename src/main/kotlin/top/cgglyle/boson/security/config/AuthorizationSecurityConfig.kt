@@ -1,12 +1,31 @@
+/*
+ * Copyright 2024 Lyle Liu<cgglyle@outlook.com> and all contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package top.cgglyle.boson.security.config
 
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.JWKSource
 import com.nimbusds.jose.proc.SecurityContext
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.security.authentication.AuthenticationEventPublisher
+import org.springframework.security.authentication.DefaultAuthenticationEventPublisher
 import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
@@ -134,6 +153,11 @@ class AuthorizationSecurityConfig {
     @Bean
     fun authorizationServerSettings(): AuthorizationServerSettings {
         return AuthorizationServerSettings.builder().issuer("http://localhost:9001").build()
+    }
+
+    @Bean
+    fun defaultAuthenticationEventPublisher(applicationEventPublisher: ApplicationEventPublisher): AuthenticationEventPublisher {
+        return DefaultAuthenticationEventPublisher(applicationEventPublisher)
     }
 
     @Bean

@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.authentication.domain
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import top.cgglyle.boson.security.common.AbstractIDRepository
+import top.cgglyle.boson.security.common.UID
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
+interface LocalAuthEntityRepository : AbstractIDRepository<LocalAuthEntity> {
+    fun findByUid(uid: UID): LocalAuthEntity?
 
+    fun getByUid(uid: UID): LocalAuthEntity
 
+    fun deleteByUid(uid: UID): Long
 }

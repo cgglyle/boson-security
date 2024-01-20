@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.common
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import jakarta.persistence.Embeddable
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
+/**
+ * @author: Lyle Liu
+ */
+@Embeddable
+class Expiration(
+    val time: Instant
 ) {
+    companion object {
+        val NEVER: Expiration = Expiration(
+            LocalDateTime.of(3000, 1, 1, 1, 1, 1).toInstant(ZoneOffset.UTC)
+        )
+        val MIN: Expiration = Expiration(Instant.EPOCH)
+    }
 
-
+    fun isExpired(): Boolean {
+        return this.time.isAfter(Instant.now())
+    }
 }

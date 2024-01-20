@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.authorization
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import jakarta.persistence.Embeddable
+import java.io.Serializable
+import java.util.*
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
+/**
+ * @author: Lyle Liu
+ */
+@Embeddable
+data class RID(
+    val id: String,
+) : Serializable {
+    companion object {
+        fun randomRID(): RID {
+            return RID(UUID.randomUUID().toString())
+        }
+    }
 }

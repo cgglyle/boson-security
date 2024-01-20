@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.authorization.domain.entity
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import top.cgglyle.boson.security.authorization.RID
+import top.cgglyle.boson.security.authorization.RoleDto
+import top.cgglyle.boson.security.authorization.RoleName
+import top.cgglyle.boson.security.common.AbstractIDRepository
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
+interface RoleRepository : AbstractIDRepository<RoleEntity> {
+    fun findByRoleName(roleName: RoleName): RoleEntity?
 
+    fun findByRid(rid: RID): RoleDto?
+
+    fun getByRid(rid: RID): RoleDto
 
 }

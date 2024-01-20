@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.account
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
-
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
+import top.cgglyle.boson.security.common.UID
 
 
+/**
+ * @author: Lyle Liu
+ */
+interface AccountManager {
+    fun save(accountDto: CreateAccountDto): UID
+    fun delete(uid: UID)
 }

@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.auth
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import jakarta.persistence.AttributeOverride
+import jakarta.persistence.Column
+import org.springframework.security.core.GrantedAuthority
+import top.cgglyle.boson.security.authorization.RID
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
+/**
+ * @author: Lyle Liu
+ */
+data class RidRole(
+    @AttributeOverride(name = "id", column = Column(name = "rid", updatable = false, nullable = false, unique = true))
+    val rid: RID,
+    val roleName: String,
+) : GrantedAuthority {
+    override fun getAuthority(): String {
+        return roleName
+    }
 }

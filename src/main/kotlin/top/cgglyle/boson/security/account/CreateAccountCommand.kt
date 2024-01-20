@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.account
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import top.cgglyle.boson.security.authorization.RID
+import top.cgglyle.boson.security.common.Expiration
+import java.io.Serializable
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
-}
+/**
+ * DTO for {@link top.cgglyle.boson.security.domain.entity.auth.UserEntity}
+ */
+data class CreateAccountCommand(
+    val username: String?,
+    val email: String?,
+    val roles: Set<RID>,
+    val expiration: Expiration = Expiration.NEVER,
+    val isLocked: Boolean = false,
+    val isEnable: Boolean = true,
+) : Serializable

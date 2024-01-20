@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.auth.service
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import org.springframework.data.domain.AuditorAware
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.stereotype.Component
+import top.cgglyle.boson.security.auth.CurrentLoginUidUtil
+import top.cgglyle.boson.security.common.UID
+import java.util.*
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
+@EnableJpaAuditing
+@Component
+class SecurityAuditingAware : AuditorAware<UID> {
+    override fun getCurrentAuditor(): Optional<UID> {
+        return Optional.of(CurrentLoginUidUtil.getCurrentLoginUid())
+    }
 }

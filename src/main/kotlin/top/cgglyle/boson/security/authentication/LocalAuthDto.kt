@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.authentication
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import top.cgglyle.boson.security.common.UID
+import java.io.Serializable
+import java.time.Instant
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
-}
+/**
+ * DTO for {@link top.cgglyle.boson.security.authentication.domain.LocalAuthEntity}
+ */
+data class LocalAuthDto(
+    val id: Long = -1,
+    val createdBy: UID = UID.defaultUID(),
+    val createdDate: Instant = Instant.now(),
+    val lastModifiedBy: UID? = null,
+    val lastModifiedDate: Instant? = null,
+    val uid: UID,
+    val password: String,
+    val isCredentialsExpired: Boolean
+) : Serializable

@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.client.domain
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import top.cgglyle.boson.security.common.AbstractIDRepository
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
+interface ClientRepository : AbstractIDRepository<ClientEntity> {
+    fun findByClientId(clientId: String): ClientEntity?
 }

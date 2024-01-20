@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
-import top.cgglyle.boson.security.user.domain.entity.event.CreateAccountEvent
+import top.cgglyle.boson.security.account.CreateAccountEvent
 
 /**
  * @author: Lyle Liu

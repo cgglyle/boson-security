@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.exception
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import org.springframework.http.HttpStatus
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
+class DataNotFoundException(
+    messageDetail: String = "Data not found!",
+    cause: Throwable? = null,
+    httpStatus: HttpStatus = HttpStatus.NOT_FOUND
+) : ClientException(messageDetail, httpStatus, cause) {
+    init {
+        setTitle("Data Not Found")
+    }
 }

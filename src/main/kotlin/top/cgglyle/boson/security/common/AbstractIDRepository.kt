@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Lyle Liu<cgglyle@outlook.com> and all contributors
+ * Copyright 2024-2024 Lyle and all contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.web
+package top.cgglyle.boson.security.common
 
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
-import top.cgglyle.boson.security.account.AccountFindable
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.repository.NoRepositoryBean
 
-@RestController
-@RequestMapping("/api/users")
-class AccountController(
-    private val accountFindable: AccountFindable,
-) {
-
-
-}
+@NoRepositoryBean
+interface AbstractIDRepository<T> : JpaRepository<T, String>
