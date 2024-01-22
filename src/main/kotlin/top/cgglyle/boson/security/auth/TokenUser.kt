@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.common
+package top.cgglyle.boson.security.auth
 
-import jakarta.persistence.Embeddable
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import org.springframework.security.core.userdetails.UserDetails
 
 /**
  * @author: Lyle Liu
  */
-@Embeddable
-class Expiration(
-    val time: Instant
-) {
-    companion object {
-        val NEVER: Expiration = Expiration(
-            LocalDateTime.of(3000, 1, 1, 1, 1, 1).toInstant(ZoneOffset.UTC)
-        )
-        val MIN: Expiration = Expiration(Instant.EPOCH)
-    }
-
-    fun isExpired(): Boolean {
-        return this.time.isBefore(Instant.now())
-    }
+class TokenUser(
+    private val details: UserDetails
+) : UserDetails by details {
+    private var auth: AuthUserManager? = null
 }

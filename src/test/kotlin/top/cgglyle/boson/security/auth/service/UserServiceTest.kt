@@ -37,10 +37,10 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import top.cgglyle.boson.security.account.AccountFindable
 import top.cgglyle.boson.security.account.AccountManager
 import top.cgglyle.boson.security.account.CreateAccountQuery
-import top.cgglyle.boson.security.auth.UidUser
 import top.cgglyle.boson.security.authorization.RoleFindable
 import top.cgglyle.boson.security.exception.DataExistException
 import top.cgglyle.boson.security.exception.IllegalArgumentException
+import top.cgglyle.boson.security.auth.UidDetailUser as UidUser
 
 /**
  * @author: Lyle Liu

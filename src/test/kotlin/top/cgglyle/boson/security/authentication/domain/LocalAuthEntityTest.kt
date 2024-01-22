@@ -22,8 +22,8 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -70,9 +70,9 @@ class LocalAuthEntityTest {
     @Test
     fun isCredentialsNonExpired() {
 
-        val credentialsNonExpired = localAuthEntity.isCredentialsNonExpired()
+        val credentialsExpired = localAuthEntity.isCredentialsExpired()
 
-        assertTrue(credentialsNonExpired)
+        assertFalse(credentialsExpired)
     }
 
     @Test

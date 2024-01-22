@@ -16,21 +16,14 @@
 
 package top.cgglyle.boson.security.auth
 
-import org.springframework.security.core.GrantedAuthority
-import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetails
 import top.cgglyle.boson.security.common.UID
 
 /**
  * @author: Lyle Liu
  */
-class UidUser(
+class UidDetailUser(
     val uid: UID,
-    val usernameType: UsernameType,
-    username: String,
-    password: String,
-    enabled: Boolean,
-    accountNonExpired: Boolean,
-    credentialsNonExpired: Boolean,
-    accountNonLocked: Boolean,
-    authorities: Set<GrantedAuthority>
-) : User(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities)
+    private val userDetails: UserDetails,
+) : UserDetails by userDetails {
+}

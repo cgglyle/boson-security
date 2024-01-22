@@ -25,8 +25,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import top.cgglyle.boson.security.auth.CurrentLoginUidUtil
-import top.cgglyle.boson.security.auth.UidUser
 import top.cgglyle.boson.security.common.UID
+import top.cgglyle.boson.security.auth.UidDetailUser as UidUser
 
 /**
  * @author: Lyle Liu

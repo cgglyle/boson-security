@@ -35,8 +35,8 @@ data class AccountDto(
     val username: String = "",
     val email: String = "",
     val roles: MutableSet<RID> = mutableSetOf(),
-    val accountNonExpired: Boolean = true,
-    val accountNonLocked: Boolean = true,
+    val accountExpired: Boolean = true,
+    val accountLocked: Boolean = true,
     val enable: Boolean = true
 ) : Serializable {
     companion object {
@@ -56,7 +56,7 @@ data class AccountDto(
                     email,
                     roles,
                     expired,
-                    !locked,
+                    locked,
                     enable
                 )
             }

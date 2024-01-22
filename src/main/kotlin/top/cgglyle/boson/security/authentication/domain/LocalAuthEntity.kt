@@ -41,7 +41,7 @@ class LocalAuthEntity(
         return this.passwordEntity.getLastedPassword().password
     }
 
-    fun isCredentialsNonExpired(): Boolean {
+    fun isCredentialsExpired(): Boolean {
         return this.expiration.isExpired()
     }
 

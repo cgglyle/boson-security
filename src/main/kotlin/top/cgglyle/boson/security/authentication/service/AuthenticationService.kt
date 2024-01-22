@@ -47,7 +47,7 @@ class AuthenticationService(
                 lastModifiedDate,
                 uid,
                 getPassword(),
-                isCredentialsNonExpired()
+                isCredentialsExpired()
             )
         }
     }

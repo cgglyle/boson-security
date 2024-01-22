@@ -30,7 +30,7 @@ import top.cgglyle.boson.security.account.AccountManager
 import top.cgglyle.boson.security.account.CreateAccountDto
 import top.cgglyle.boson.security.account.CreateAccountQuery
 import top.cgglyle.boson.security.auth.AuthUserManager
-import top.cgglyle.boson.security.auth.UidUser
+import top.cgglyle.boson.security.auth.UidDetailUser
 import top.cgglyle.boson.security.authentication.AuthenticationManager
 import top.cgglyle.boson.security.authentication.CreateAuthDto
 import top.cgglyle.boson.security.authorization.RoleFindable
@@ -106,7 +106,7 @@ class UserService(
         )
 
         logger.debug("Changing password for user '$username'")
-        val uidUser = currentUser.principal as UidUser
+        val uidUser = currentUser.principal as UidDetailUser
         authenticationManager.addPassword(uidUser.uid, newPassword)
         val authentication = createNewAuthentication(currentUser, newPassword)
         val securityContext = contextHolderStrategy.createEmptyContext()

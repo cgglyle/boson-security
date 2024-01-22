@@ -4,11 +4,11 @@ import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import top.cgglyle.boson.security.account.CreateAccountQuery
 import top.cgglyle.boson.security.auth.AuthUserManager
-import top.cgglyle.boson.security.auth.UidUser
 import top.cgglyle.boson.security.common.UID
 import top.cgglyle.boson.security.web.query.LoginQuery
 
@@ -34,7 +34,7 @@ class AuthController(
     }
 
     @GetMapping("userinfo")
-    fun getCurrentLoginUserDetails(): UidUser {
-        return SecurityContextHolder.getContext().authentication.principal as UidUser
+    fun getCurrentLoginUserDetails(): UserDetails {
+        return SecurityContextHolder.getContext().authentication.principal as UserDetails
     }
 }

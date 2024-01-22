@@ -17,13 +17,14 @@
 package top.cgglyle.boson.security.auth.service
 
 import org.slf4j.LoggerFactory
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import top.cgglyle.boson.security.account.AccountFindable
 import top.cgglyle.boson.security.auth.RidRole
-import top.cgglyle.boson.security.auth.UidUser
+import top.cgglyle.boson.security.auth.UidDetailUser
 import top.cgglyle.boson.security.auth.UsernameType
 import top.cgglyle.boson.security.authentication.AuthenticationFindable
 import top.cgglyle.boson.security.authorization.RoleFindable
@@ -65,17 +66,15 @@ class DefaultLocalUserDetailsManager(
         }
         val authDto = authenticationFindable.getAuthenticationInfo(uid)
         val userDetails = with(accountDto) {
-            UidUser(
-                uid,
-                usernameType,
-                username,
-                authDto.password,
-                enable,
-                accountNonExpired,
-                authDto.isCredentialsExpired,
-                accountNonLocked,
-                roleDtoSet
-            )
+            val user = User.withUsername(username)
+                .password(authDto.password)
+                .disabled(!enable)
+                .accountExpired(accountExpired)
+                .accountLocked(accountLocked)
+                .credentialsExpired(authDto.isCredentialsExpired)
+                .authorities(roleDtoSet)
+                .build()
+            UidDetailUser(uid, user)
         }
         return userDetails
     }

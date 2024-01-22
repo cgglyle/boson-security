@@ -33,7 +33,7 @@ class CurrentLoginUidUtil private constructor() {
             }
             if (authentication.isAuthenticated) {
                 val principal = authentication.principal
-                if (principal is UidUser) {
+                if (principal is UidDetailUser) {
                     return principal.uid
                 }
             } else {
