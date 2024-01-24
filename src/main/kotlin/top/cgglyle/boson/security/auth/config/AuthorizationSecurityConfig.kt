@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.config
+package top.cgglyle.boson.security.auth.config
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.nimbusds.jose.jwk.JWKSet
 import com.nimbusds.jose.jwk.RSAKey
 import com.nimbusds.jose.jwk.source.JWKSource
@@ -36,13 +37,17 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
+import org.springframework.security.web.session.HttpSessionEventPublisher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import top.cgglyle.boson.security.config.csrf.CsrfCookieFilter
-import top.cgglyle.boson.security.config.csrf.SpaCsrfTokenRequestHandler
+import top.cgglyle.boson.security.auth.config.csrf.CsrfCookieFilter
+import top.cgglyle.boson.security.auth.config.csrf.SpaCsrfTokenRequestHandler
+import top.cgglyle.boson.security.auth.handler.*
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.NoSuchAlgorithmException
@@ -51,7 +56,9 @@ import java.security.interfaces.RSAPublicKey
 import java.util.*
 
 @Configuration
-class AuthorizationSecurityConfig {
+class AuthorizationSecurityConfig(
+    private val objectMapper: ObjectMapper,
+) {
     @Bean
     @Order(1)
     @Throws(Exception::class)
@@ -83,44 +90,18 @@ class AuthorizationSecurityConfig {
                 it.loginProcessingUrl("/api/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .successHandler { _, response, _ ->
-                        run {
-                            response.writer.append("OK")
-                            response.status = 200
-                        }
-                    }
-                    .failureHandler { _, response, _ ->
-                        run {
-                            response.writer.append("Authentication failure")
-                            response.status = 401
-                            response.flushBuffer()
-                        }
-                    }
+                    .successHandler(FormLoginSuccessHandler())
+                    .failureHandler(FormLoginFailureHandler(objectMapper))
                     .permitAll()
             }
             .logout {
                 it.logoutUrl("/api/logout")
-                it.logoutSuccessHandler { _, response, _ ->
-                    run {
-                        response.status = 200
-                        response.writer.append("OK")
-                    }
-                }
+                it.logoutSuccessHandler(LogoutSuccessHandler())
                 it.permitAll()
             }
             .exceptionHandling {
-                it.accessDeniedHandler { _, response, _ ->
-                    run {
-                        response.writer.append("Access Denied")
-                        response.status = 403
-                    }
-                }
-                it.authenticationEntryPoint { _, response, _ ->
-                    run {
-                        response.writer.append("Unauthorized! Please login!")
-                        response.status = 401
-                    }
-                }
+                it.accessDeniedHandler(DefaultAccessDeniedHandler(objectMapper))
+                it.authenticationEntryPoint(DefaultAuthenticationEntryPoint(objectMapper))
             }
 
         http
@@ -128,7 +109,13 @@ class AuthorizationSecurityConfig {
                 it.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 it.csrfTokenRequestHandler(SpaCsrfTokenRequestHandler())
             }
+
         http.addFilterAfter(CsrfCookieFilter(), BasicAuthenticationFilter::class.java)
+
+        http.logout {
+            it.addLogoutHandler(HeaderWriterLogoutHandler(ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)))
+        }
+
         return http.build()
     }
 
@@ -158,6 +145,11 @@ class AuthorizationSecurityConfig {
     @Bean
     fun defaultAuthenticationEventPublisher(applicationEventPublisher: ApplicationEventPublisher): AuthenticationEventPublisher {
         return DefaultAuthenticationEventPublisher(applicationEventPublisher)
+    }
+
+    @Bean
+    fun httpSessionEventPublisher(): HttpSessionEventPublisher {
+        return HttpSessionEventPublisher()
     }
 
     @Bean

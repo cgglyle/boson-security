@@ -16,21 +16,18 @@
 
 package top.cgglyle.boson.security.auth.service
 
-import org.slf4j.LoggerFactory
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import top.cgglyle.boson.security.account.AccountFindable
 import top.cgglyle.boson.security.auth.RidRole
 import top.cgglyle.boson.security.auth.UidDetailUser
-import top.cgglyle.boson.security.auth.UsernameType
 import top.cgglyle.boson.security.authentication.AuthenticationFindable
 import top.cgglyle.boson.security.authorization.RoleFindable
-import top.cgglyle.boson.security.exception.DataNotFoundException
 import top.cgglyle.boson.security.exception.IllegalArgumentException
-import top.cgglyle.boson.security.exception.SystemException
 
 /**
  * Only the data related to the authenticated entity is processed here,
@@ -47,23 +44,16 @@ class DefaultLocalUserDetailsManager(
     private val roleFindable: RoleFindable,
     private val authenticationFindable: AuthenticationFindable,
 ) : UserDetailsService {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
     @Transactional
     override fun loadUserByUsername(username: String?): UserDetails {
         if (username.isNullOrBlank()) throw IllegalArgumentException("Username must not be null!")
         val accountDto = accountFindable.findByUsername(username)
-            ?: throw DataNotFoundException("Username '$username' not found!")
+            ?: throw UsernameNotFoundException("Username '$username' not found!")
         val uid = accountDto.uid
         val roleDtoSet: Set<RidRole> = accountDto.roles.map {
             val roleDto = roleFindable.getByRid(it)
             RidRole(roleDto.rid, roleDto.roleName.name)
         }.toSet()
-        val usernameType = when (username) {
-            accountDto.username -> UsernameType.USERNAME
-            accountDto.email -> UsernameType.EMAIL
-            else -> throw SystemException("Username: '$username' must match UsernameType!")
-        }
         val authDto = authenticationFindable.getAuthenticationInfo(uid)
         val userDetails = with(accountDto) {
             val user = User.withUsername(username)

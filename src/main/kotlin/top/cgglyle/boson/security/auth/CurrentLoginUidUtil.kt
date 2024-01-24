@@ -28,8 +28,9 @@ class CurrentLoginUidUtil private constructor() {
         fun getCurrentLoginUid(): UID {
             val authentication = SecurityContextHolder.getContext().authentication
             if (authentication == null) {
-                logger.warn("Current Security Authentication is null, current user maybe is SYSTEM")
-                return UID.systemUID()
+                val systemUID = UID.systemUID()
+                logger.info("Current Security Authentication is null, current user maybe is SYSTEM Operation. '$systemUID'")
+                return systemUID
             }
             if (authentication.isAuthenticated) {
                 val principal = authentication.principal

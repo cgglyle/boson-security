@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.config.csrf
+package top.cgglyle.boson.security.auth.config.csrf
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

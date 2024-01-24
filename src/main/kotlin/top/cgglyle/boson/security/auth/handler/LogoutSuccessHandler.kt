@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.config.csrf
+package top.cgglyle.boson.security.auth.handler
 
-import jakarta.servlet.FilterChain
-import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.security.web.csrf.CsrfToken
-import org.springframework.web.filter.OncePerRequestFilter
-import java.io.IOException
+import org.springframework.security.core.Authentication
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler
 
-class CsrfCookieFilter : OncePerRequestFilter() {
-
-    @Throws(ServletException::class, IOException::class)
-    override fun doFilterInternal(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        filterChain: FilterChain
+/**
+ * @author: Lyle Liu
+ */
+class LogoutSuccessHandler : LogoutSuccessHandler {
+    override fun onLogoutSuccess(
+        request: HttpServletRequest?,
+        response: HttpServletResponse?,
+        authentication: Authentication?
     ) {
-        val csrfToken = request.getAttribute("_csrf") as CsrfToken
-        // Render the token value to a cookie by causing the deferred token to be loaded
-        csrfToken.token
-        filterChain.doFilter(request, response)
+        if (response == null || response.isCommitted) {
+            return
+        }
+        response.status = 201
     }
 }

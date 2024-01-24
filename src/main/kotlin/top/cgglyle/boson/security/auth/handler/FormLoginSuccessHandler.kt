@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.auth
+package top.cgglyle.boson.security.auth.handler
 
-import org.springframework.security.core.userdetails.UserDetails
-import top.cgglyle.boson.security.common.UID
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.core.Authentication
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 
 /**
  * @author: Lyle Liu
  */
-data class UidDetailUser(
-    val uid: UID,
-    private val userDetails: UserDetails,
-) : UserDetails by userDetails
+class FormLoginSuccessHandler : AuthenticationSuccessHandler {
+    override fun onAuthenticationSuccess(
+        request: HttpServletRequest?,
+        response: HttpServletResponse?,
+        authentication: Authentication?
+    ) {
+        if (response == null || response.isCommitted) {
+            return
+        }
+        response.status = 201
+    }
+}
