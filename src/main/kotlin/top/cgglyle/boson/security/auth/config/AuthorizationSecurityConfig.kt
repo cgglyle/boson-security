@@ -82,7 +82,8 @@ class AuthorizationSecurityConfig(
                     "/v3/api-docs/**",
                     "/swagger-ui/**",
                     "/v2/api-docs/**",
-                    "/swagger-resources/**"
+                    "/swagger-resources/**",
+                    "/api/register"
                 ).permitAll()
                 it.anyRequest().authenticated()
             }

@@ -87,13 +87,13 @@ class SystemInfoPrintfService(
         val finalInfo = if (profile != "prod") {
             val swaggerDoc =
                 "Online doc url: [http://$hostAddress:$localServerPort/swagger-ui/index.html]"
-           buildString {
+            buildString {
                 append(heardInfo).append("\n")
                 append("|>>> ").append(swaggerDoc).append("\n")
                 append("+----------------------------------------------------------\n")
             }
         } else {
-           heardInfo
+            heardInfo
         }
 
         log.info(finalInfo)

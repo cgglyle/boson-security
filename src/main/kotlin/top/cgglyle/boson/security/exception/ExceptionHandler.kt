@@ -17,8 +17,8 @@
 package top.cgglyle.boson.security.exception
 
 import jakarta.validation.ConstraintViolationException
-import org.springframework.http.HttpStatus
-import org.springframework.http.ProblemDetail
+import org.springframework.http.*
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
@@ -35,24 +35,27 @@ class ExceptionHandler() : ResponseEntityExceptionHandler() {
         val constraintViolations = e.constraintViolations
         val messages = constraintViolations.joinToString { "${it.propertyPath}: ${it.message}" }
         return createProblemDetail(
-            e,
-            HttpStatus.BAD_REQUEST,
-            messages,
-            null,
-            null,
-            request
+            e, HttpStatus.BAD_REQUEST, messages, null, null, request
         )
     }
 
     @ExceptionHandler(Exception::class)
     fun undefinedException(e: Exception, request: WebRequest): ProblemDetail {
         return createProblemDetail(
-            e,
-            HttpStatus.INTERNAL_SERVER_ERROR,
-            "Oops! System Error.",
-            null,
-            null,
-            request
+            e, HttpStatus.INTERNAL_SERVER_ERROR, "Oops! System Error.", null, null, request
         )
+    }
+
+    override fun handleMethodArgumentNotValid(
+        ex: MethodArgumentNotValidException, headers: HttpHeaders, status: HttpStatusCode, request: WebRequest
+    ): ResponseEntity<Any>? {
+        val message = if (ex.detailMessageArguments.size > 1) {
+            ex.detailMessageArguments[1]
+        } else {
+            ex.detailMessageArguments[0]
+        }
+        val problemDetail =
+            createProblemDetail(ex, status, message.toString(), null, null, request)
+        return super.handleExceptionInternal(ex, problemDetail, headers, status, request)
     }
 }

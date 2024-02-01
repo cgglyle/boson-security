@@ -19,17 +19,20 @@ package top.cgglyle.boson.security.auth
 import jakarta.transaction.SystemException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import top.cgglyle.boson.security.common.UID
 
 class CurrentLoginUidUtil private constructor() {
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(CurrentLoginUidUtil::class.java)
+        private val local: ThreadLocal<UID> = ThreadLocal()
         fun getCurrentLoginUid(): UID {
             val authentication = SecurityContextHolder.getContext().authentication
             if (authentication == null) {
-                val systemUID = UID.systemUID()
+                val systemUID = getLocalUid() ?: UID.systemUID()
                 logger.info("Current Security Authentication is null, current user maybe is SYSTEM Operation. '$systemUID'")
+                setLocalUid(systemUID)
                 return systemUID
             }
             if (authentication.isAuthenticated) {
@@ -37,10 +40,29 @@ class CurrentLoginUidUtil private constructor() {
                 if (principal is UidDetailUser) {
                     return principal.uid
                 }
+                if (principal is String && principal.equals("anonymousUser") && authentication.authorities.contains(
+                        SimpleGrantedAuthority("ROLE_ANONYMOUS")
+                    )
+                ) {
+                    val uid = getLocalUid() ?: UID.anonymousUID()
+                    setLocalUid(uid)
+                    return uid
+                }
             } else {
-                return UID.anonymousUID()
+                val uid = getLocalUid() ?: UID.anonymousUID()
+                setLocalUid(uid)
+                return uid
             }
             throw SystemException("Get Security Info Error!")
         }
+
+        private fun setLocalUid(uid: UID) {
+            if (local.get() == null) {
+                local.set(uid)
+            }
+        }
+
+        private fun getLocalUid(): UID? = local.get()
     }
+
 }

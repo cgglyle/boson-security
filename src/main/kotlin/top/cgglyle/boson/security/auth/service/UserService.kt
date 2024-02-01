@@ -48,8 +48,6 @@ class UserService(
     private val authenticationManager: AuthenticationManager,
     private val authenticationConfiguration: AuthenticationConfiguration,
 ) : AuthUserManager {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
     @Transactional
     override fun createUser(query: CreateAccountQuery): UID {
         if (query.username.isNullOrBlank() && query.email.isNullOrBlank()) {
@@ -125,5 +123,9 @@ class UserService(
         val newAuthentication = UsernamePasswordAuthenticationToken.authenticated(user, null, user.authorities)
         newAuthentication.details = currentAuth.details
         return newAuthentication
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(UserService::class.java)
     }
 }

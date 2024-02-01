@@ -2,7 +2,7 @@
   <configuration default="false" name="Dev-BosonSecurityApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-    <module name="boson-security-backend.main" />
+    <module name="top.cgglyle.security.boson-security-backend.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="top.cgglyle.boson.security.BosonSecurityApplication" />
     <method v="2">
       <option name="Make" enabled="true" />

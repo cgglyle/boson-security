@@ -14,32 +14,26 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.common
+package top.cgglyle.boson.security.web.query
 
-import jakarta.persistence.Embeddable
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.NotBlank
+import org.hibernate.validator.constraints.Length
 
 /**
  * @author: Lyle Liu
  */
-@Embeddable
-class Expiration(
-    val time: Instant
-) {
-    companion object {
-        val NEVER: Expiration = Expiration(
-            LocalDateTime.of(3000, 1, 1, 1, 1, 1).toInstant(ZoneOffset.UTC)
-        )
-        val MIN: Expiration = Expiration(Instant.EPOCH)
+data class RegisterQuery(
+    @field:NotBlank
+    @field:Length(min = 2, max = 64)
+    val username: String?,
 
-        fun fromString(time: String): Expiration {
-            return Expiration(Instant.parse(time))
-        }
-    }
+    @field:NotBlank
+    @field:Length(max = 64)
+    @field:Email
+    val email: String?,
 
-    fun isExpired(): Boolean {
-        return this.time.isBefore(Instant.now())
-    }
-}
+    @field:NotBlank
+    @field:Length(min = 4, max = 64)
+    val password: String,
+)
