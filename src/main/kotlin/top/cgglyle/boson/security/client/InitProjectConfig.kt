@@ -19,11 +19,13 @@ package top.cgglyle.boson.security.client
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod
 import org.springframework.transaction.annotation.Transactional
 import top.cgglyle.boson.security.account.CreateAccountQuery
 import top.cgglyle.boson.security.auth.AuthUserManager
+import top.cgglyle.boson.security.auth.CurrentLoginUidUtil
 import top.cgglyle.boson.security.authorization.CreateRoleDto
 import top.cgglyle.boson.security.authorization.RoleFindable
 import top.cgglyle.boson.security.authorization.RoleManager
@@ -41,8 +43,14 @@ class InitProjectConfig(
 
     @Transactional
     override fun run(args: ApplicationArguments?) {
+        initSecurityUser()
         initUser()
         initClient()
+    }
+
+    fun initSecurityUser() {
+        val contextHolderStrategy = SecurityContextHolder.getContextHolderStrategy()
+        contextHolderStrategy.context.authentication = CurrentLoginUidUtil.newSystemAuthenticationToken()
     }
 
     fun initUser() {
@@ -54,10 +62,7 @@ class InitProjectConfig(
 
         authUserManager.createUser(
             CreateAccountQuery(
-                "user",
-                "user@user.com",
-                "username",
-                mutableSetOf("ADMIN")
+                "user", "user@user.com", "username", mutableSetOf("ADMIN")
             )
         )
     }
@@ -69,17 +74,11 @@ class InitProjectConfig(
 
         clientService.save(
             CreateClientCommand(
-                "client",
-                "secret",
-                mutableSetOf(ClientAuthenticationMethod.CLIENT_SECRET_BASIC),
-                mutableSetOf(
+                "client", "secret", mutableSetOf(ClientAuthenticationMethod.CLIENT_SECRET_BASIC), mutableSetOf(
                     AuthorizationGrantType.AUTHORIZATION_CODE,
                     AuthorizationGrantType.CLIENT_CREDENTIALS,
                     AuthorizationGrantType.REFRESH_TOKEN
-                ),
-                mutableSetOf("https://oauthdebugger.com/debug"),
-                mutableSetOf("openid"),
-                true
+                ), mutableSetOf("https://oauthdebugger.com/debug"), mutableSetOf("openid"), true
             )
         )
     }

@@ -16,53 +16,67 @@
 
 package top.cgglyle.boson.security.auth
 
-import jakarta.transaction.SystemException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.authentication.AnonymousAuthenticationToken
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.User
 import top.cgglyle.boson.security.common.UID
+import top.cgglyle.boson.security.exception.DataNotFoundException
 
 class CurrentLoginUidUtil private constructor() {
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(CurrentLoginUidUtil::class.java)
-        private val local: ThreadLocal<UID> = ThreadLocal()
         fun getCurrentLoginUid(): UID {
-            val authentication = SecurityContextHolder.getContext().authentication
-            if (authentication == null) {
-                val systemUID = getLocalUid() ?: UID.systemUID()
-                logger.info("Current Security Authentication is null, current user maybe is SYSTEM Operation. '$systemUID'")
-                setLocalUid(systemUID)
-                return systemUID
-            }
-            if (authentication.isAuthenticated) {
-                val principal = authentication.principal
-                if (principal is UidDetailUser) {
-                    return principal.uid
-                }
-                if (principal is String && principal.equals("anonymousUser") && authentication.authorities.contains(
-                        SimpleGrantedAuthority("ROLE_ANONYMOUS")
-                    )
-                ) {
-                    val uid = getLocalUid() ?: UID.anonymousUID()
-                    setLocalUid(uid)
-                    return uid
-                }
+            val securityContext = SecurityContextHolder.getContext()
+            val authentication = securityContext.authentication
+            isAuthentication(authentication)
+            return if (isAnonymousUser(authentication)) {
+                getAnonymousUid(authentication)
             } else {
-                val uid = getLocalUid() ?: UID.anonymousUID()
-                setLocalUid(uid)
+                val uidDetailUser = getUidDetailUser(authentication)
+                getUid(uidDetailUser)
+            }
+        }
+
+        private fun isAuthentication(authentication: Authentication?) {
+            if (authentication == null) {
+                throw DataNotFoundException("Current caller is not authentication.")
+            }
+        }
+
+        private fun isAnonymousUser(authentication: Authentication): Boolean =
+            authentication is AnonymousAuthenticationToken
+
+        private fun getAnonymousUid(authentication: Authentication): UID {
+            return if (authentication is SystemAuthenticationToken) {
+                val (uid) = authentication.principal as UidDetailUser
                 return uid
-            }
-            throw SystemException("Get Security Info Error!")
-        }
-
-        private fun setLocalUid(uid: UID) {
-            if (local.get() == null) {
-                local.set(uid)
+            } else if (authentication is AnonymousAuthenticationToken) {
+                UID(authentication.name + authentication.keyHash)
+            } else {
+                throw DataNotFoundException("")
             }
         }
 
-        private fun getLocalUid(): UID? = local.get()
+        private fun getUidDetailUser(authentication: Authentication) = authentication.principal as UidDetailUser
+
+        private fun getUid(uidDetailUser: UidDetailUser) = uidDetailUser.uid
+
+        fun newSystemAuthenticationToken(): SystemAuthenticationToken {
+            val systemUserDetail = createSystemUserDetail()
+            return SystemAuthenticationToken(
+                systemUserDetail.hashCode().toString(), systemUserDetail, systemUserDetail.authorities
+            )
+        }
+
+        private fun createSystemUserDetail(): UidDetailUser {
+            val userDetails =
+                User.withUsername("System User").password("").authorities(SimpleGrantedAuthority("SYSTEM")).build()
+            return UidDetailUser(UID.systemUID(), userDetails)
+        }
+
     }
-
 }

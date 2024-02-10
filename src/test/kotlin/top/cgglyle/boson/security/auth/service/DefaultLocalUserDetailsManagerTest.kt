@@ -27,13 +27,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.password.PasswordEncoder
 import top.cgglyle.boson.security.account.AccountDto
 import top.cgglyle.boson.security.account.AccountFindable
 import top.cgglyle.boson.security.authentication.AuthenticationFindable
 import top.cgglyle.boson.security.authentication.domain.LocalAuthEntityRepository
 import top.cgglyle.boson.security.authorization.RoleFindable
-import top.cgglyle.boson.security.exception.DataNotFoundException
 import top.cgglyle.boson.security.exception.IllegalArgumentException
 
 @ExtendWith(MockKExtension::class)
@@ -88,7 +88,7 @@ class DefaultLocalUserDetailsManagerTest {
         every { accountFindable.findByUsername(any()) }.returns(null)
 
         // when
-        assertThrows<DataNotFoundException> {
+        assertThrows<UsernameNotFoundException> {
             defaultLocalUserDetailsManager.loadUserByUsername(failUsername)
         }
     }

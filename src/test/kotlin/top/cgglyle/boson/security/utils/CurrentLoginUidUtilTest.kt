@@ -20,12 +20,13 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import top.cgglyle.boson.security.auth.CurrentLoginUidUtil
 import top.cgglyle.boson.security.common.UID
+import top.cgglyle.boson.security.exception.DataNotFoundException
 import top.cgglyle.boson.security.auth.UidDetailUser as UidUser
 
 /**
@@ -34,32 +35,16 @@ import top.cgglyle.boson.security.auth.UidDetailUser as UidUser
 class CurrentLoginUidUtilTest {
 
     @Test
-    fun unAuthenticationShouldIsSystemUID() {
+    fun unAuthenticationShouldBeThrowException() {
         mockkStatic(SecurityContextHolder::class)
         every { SecurityContextHolder.getContext().authentication }.returns(null)
         mockkStatic(UID::class)
 
         // when
-        val currentLoginUid = CurrentLoginUidUtil.getCurrentLoginUid()
+        assertThrows<DataNotFoundException> {
+            CurrentLoginUidUtil.getCurrentLoginUid()
+        }
 
-        // then
-        val contains = currentLoginUid.value.contains("[SYSTEM DEFAULT UID]")
-        assertTrue(contains)
-    }
-
-    @Test
-    fun anonymousUserShouldIsAnonymousUID() {
-        mockkStatic(SecurityContextHolder::class)
-        val authentication = mockk<Authentication>()
-        every { SecurityContextHolder.getContext().authentication }.returns(authentication)
-        every { authentication.isAuthenticated }.returns(false)
-
-        // when
-        val currentLoginUid = CurrentLoginUidUtil.getCurrentLoginUid()
-
-        // then
-        val contains = currentLoginUid.value.contains("[ANONYMOUS DEFAULT UID]")
-        assertTrue(contains)
     }
 
     @Test
