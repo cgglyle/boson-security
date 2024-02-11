@@ -51,13 +51,19 @@ class CurrentLoginUidUtil private constructor() {
             authentication is AnonymousAuthenticationToken
 
         private fun getAnonymousUid(authentication: Authentication): UID {
-            return if (authentication is SystemAuthenticationToken) {
-                val (uid) = authentication.principal as UidDetailUser
-                return uid
-            } else if (authentication is AnonymousAuthenticationToken) {
-                UID(authentication.name + authentication.keyHash)
-            } else {
-                throw DataNotFoundException("")
+            return when (authentication) {
+                is SystemAuthenticationToken -> {
+                    val (uid) = authentication.principal as UidDetailUser
+                    return uid
+                }
+
+                is AnonymousAuthenticationToken -> {
+                    UID(authentication.toString())
+                }
+
+                else -> {
+                    throw DataNotFoundException("")
+                }
             }
         }
 

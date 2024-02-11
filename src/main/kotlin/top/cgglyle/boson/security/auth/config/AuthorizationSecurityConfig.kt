@@ -64,8 +64,7 @@ class AuthorizationSecurityConfig(
     @Throws(Exception::class)
     fun authSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http)
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer::class.java)
-            .oidc(Customizer.withDefaults())
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer::class.java).oidc(Customizer.withDefaults())
         http.exceptionHandling {
             it.authenticationEntryPoint(LoginUrlAuthenticationEntryPoint("/login"))
         }.oauth2ResourceServer { it.jwt(Customizer.withDefaults()) }
@@ -76,40 +75,30 @@ class AuthorizationSecurityConfig(
     @Order(2)
     @Throws(Exception::class)
     fun webSecurityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http
-            .authorizeHttpRequests {
-                it.requestMatchers(
-                    "/v3/api-docs/**",
-                    "/swagger-ui/**",
-                    "/v2/api-docs/**",
-                    "/swagger-resources/**",
-                    "/api/register"
-                ).permitAll()
-                it.anyRequest().authenticated()
-            }
-            .formLogin {
-                it.loginProcessingUrl("/api/login")
-                    .usernameParameter("username")
-                    .passwordParameter("password")
-                    .successHandler(FormLoginSuccessHandler())
-                    .failureHandler(FormLoginFailureHandler(objectMapper))
-                    .permitAll()
-            }
-            .logout {
-                it.logoutUrl("/api/logout")
-                it.logoutSuccessHandler(LogoutSuccessHandler())
-                it.permitAll()
-            }
-            .exceptionHandling {
-                it.accessDeniedHandler(DefaultAccessDeniedHandler(objectMapper))
-                it.authenticationEntryPoint(DefaultAuthenticationEntryPoint(objectMapper))
-            }
+        http.authorizeHttpRequests {
+            it.requestMatchers(
+                "/v3/api-docs/**", "/swagger-ui/**", "/v2/api-docs/**", "/swagger-resources/**", "/api/register"
+            ).permitAll()
+            it.anyRequest().authenticated()
+        }.formLogin {
+            it.loginProcessingUrl("/api/login").usernameParameter("username").passwordParameter("password")
+                .successHandler(FormLoginSuccessHandler()).failureHandler(FormLoginFailureHandler(objectMapper))
+                .permitAll()
+        }.logout {
+            it.logoutUrl("/api/logout")
+            it.logoutSuccessHandler(LogoutSuccessHandler())
+            it.permitAll()
+        }.exceptionHandling {
+            it.accessDeniedHandler(DefaultAccessDeniedHandler(objectMapper))
+            it.authenticationEntryPoint(DefaultAuthenticationEntryPoint(objectMapper))
+        }
 
-        http
-            .csrf {
-                it.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                it.csrfTokenRequestHandler(SpaCsrfTokenRequestHandler())
-            }
+        http.csrf {
+            it.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            it.csrfTokenRequestHandler(SpaCsrfTokenRequestHandler())
+        }
+
+        http.anonymous(Customizer.withDefaults())
 
         http.addFilterAfter(CsrfCookieFilter(), BasicAuthenticationFilter::class.java)
 
