@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.account
+package top.cgglyle.boson.security.web
 
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import top.cgglyle.boson.security.common.UID
 
-/**
- * @author: Lyle Liu
- */
-interface AccountFindable {
-    fun findAllAccount(pageable: Pageable): Page<AccountDto>
-    fun findByUsername(username: String): AccountDto?
-    fun existUid(uid: UID): Boolean
-    fun existUsername(username: String): Boolean
-    fun existsByUsernameOrEmail(username: String?, email: String?): Boolean
+data class WebPage<T>(
+    val content: List<T?>,
+    val pageNumber: Int,
+    val pageSize: Int,
+) {
+    companion object {
+        fun <T> form(page: Page<T>): WebPage<T> {
+            if (page.isEmpty) {
+                return newEmptyWebPage()
+            }
+
+            return WebPage(page.content, page.number + 1, page.totalPages)
+        }
+
+        private fun <T> newEmptyWebPage(): WebPage<T> {
+            return WebPage(listOf(), 0, 0)
+        }
+    }
 }

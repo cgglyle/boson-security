@@ -51,7 +51,7 @@ class Account(command: CreateAccountCommand) : AbstractModifiedAuditingEntity() 
     var email: String = ""
         protected set
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "sys_account_role")
     val roles: MutableSet<RID> = mutableSetOf()
 

@@ -16,15 +16,29 @@
 
 package top.cgglyle.boson.security.web
 
+import org.springframework.data.domain.PageRequest
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import top.cgglyle.boson.security.account.AccountDto
 import top.cgglyle.boson.security.account.AccountFindable
+import kotlin.math.max
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/account")
 class AccountController(
     private val accountFindable: AccountFindable,
 ) {
 
+    @Transactional
+    @GetMapping
+    fun getAllAccount(
+        pageNumber: Int = 0,
+        pageSize: Int = 10,
+    ): WebPage<AccountDto> {
+        val accountDtoPage = accountFindable.findAllAccount(PageRequest.of(max(0, pageNumber - 1), pageSize))
+        return WebPage.form(accountDtoPage)
+    }
 
 }

@@ -18,7 +18,6 @@ package top.cgglyle.boson.security.account
 
 import top.cgglyle.boson.security.account.domain.Account
 import top.cgglyle.boson.security.authorization.RID
-import top.cgglyle.boson.security.common.UID
 import java.io.Serializable
 import java.time.Instant
 
@@ -26,18 +25,18 @@ import java.time.Instant
  * DTO for {@link top.cgglyle.boson.security.account.domain.Account}
  */
 data class AccountDto(
-    val id: Long = -1,
-    val createdBy: UID = UID.defaultUID(),
-    val createdDate: Instant = Instant.now(),
-    val lastModifiedBy: UID? = null,
-    val lastModifiedDate: Instant? = null,
-    val uid: UID = UID.randomUID(),
-    val username: String = "",
-    val email: String = "",
-    val roles: MutableSet<RID> = mutableSetOf(),
-    val accountExpired: Boolean = true,
-    val accountLocked: Boolean = true,
-    val enable: Boolean = true
+    val id: Long,
+    val createdBy: String,
+    val createdDate: Instant,
+    val lastModifiedBy: String?,
+    val lastModifiedDate: Instant?,
+    val uid: String,
+    val username: String,
+    val email: String,
+    val roles: MutableSet<RID>,
+    val accountExpired: Boolean,
+    val accountLocked: Boolean,
+    val enable: Boolean,
 ) : Serializable {
     companion object {
         fun from(account: Account?): AccountDto? {
@@ -47,11 +46,11 @@ data class AccountDto(
             return with(account) {
                 AccountDto(
                     id,
-                    createdBy,
+                    createdBy.value,
                     createdDate,
-                    lastModifiedBy,
+                    lastModifiedBy?.value,
                     lastModifiedDate,
-                    uid,
+                    uid.value,
                     username,
                     email,
                     roles,

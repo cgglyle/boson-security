@@ -16,7 +16,10 @@
 
 package top.cgglyle.boson.security.account.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import top.cgglyle.boson.security.account.*
 import top.cgglyle.boson.security.account.domain.Account
 import top.cgglyle.boson.security.account.domain.AccountRepository
@@ -29,6 +32,11 @@ import top.cgglyle.boson.security.common.UID
 class AccountService(
     private val accountRepository: AccountRepository
 ) : AccountFindable, AccountManager {
+    @Transactional
+    override fun findAllAccount(pageable: Pageable): Page<AccountDto> {
+        return accountRepository.findAll(pageable).map { AccountDto.from(it) }
+    }
+
     override fun findByUsername(username: String): AccountDto? {
         val account = accountRepository.findByUsername(username)
         return AccountDto.from(account)

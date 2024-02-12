@@ -27,6 +27,7 @@ import top.cgglyle.boson.security.auth.RidRole
 import top.cgglyle.boson.security.auth.UidDetailUser
 import top.cgglyle.boson.security.authentication.AuthenticationFindable
 import top.cgglyle.boson.security.authorization.RoleFindable
+import top.cgglyle.boson.security.common.UID
 import top.cgglyle.boson.security.exception.IllegalArgumentException
 
 /**
@@ -49,7 +50,7 @@ class DefaultLocalUserDetailsManager(
         if (username.isNullOrBlank()) throw IllegalArgumentException("Username must not be null!")
         val accountDto = accountFindable.findByUsername(username)
             ?: throw UsernameNotFoundException("Username '$username' not found!")
-        val uid = accountDto.uid
+        val uid = UID(accountDto.uid)
         val roleDtoSet: Set<RidRole> = accountDto.roles.map {
             val roleDto = roleFindable.getByRid(it)
             RidRole(roleDto.rid, roleDto.roleName.name)
