@@ -2,6 +2,7 @@ package top.cgglyle.boson.security.web
 
 import jakarta.validation.Valid
 import org.springframework.http.MediaType
+import org.springframework.security.core.CredentialsContainer
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.validation.annotation.Validated
@@ -40,6 +41,9 @@ class AuthController(
 
     @GetMapping("userinfo")
     fun getCurrentLoginUserDetails(): UserDetails {
-        return SecurityContextHolder.getContext().authentication.principal as UserDetails
+        val userDetails = SecurityContextHolder.getContext().authentication.principal as UserDetails
+        val credentialsContainer = userDetails as CredentialsContainer
+        credentialsContainer.eraseCredentials()
+        return userDetails
     }
 }

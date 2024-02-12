@@ -16,6 +16,7 @@
 
 package top.cgglyle.boson.security.auth
 
+import org.springframework.security.core.CredentialsContainer
 import org.springframework.security.core.userdetails.UserDetails
 import top.cgglyle.boson.security.common.UID
 
@@ -25,4 +26,4 @@ import top.cgglyle.boson.security.common.UID
 data class UidDetailUser(
     val uid: UID,
     private val userDetails: UserDetails,
-) : UserDetails by userDetails
+) : UserDetails by userDetails, CredentialsContainer by userDetails as CredentialsContainer
