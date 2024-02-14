@@ -26,63 +26,61 @@ import org.springframework.security.core.userdetails.User
 import top.cgglyle.boson.security.common.UID
 import top.cgglyle.boson.security.exception.DataNotFoundException
 
-class CurrentLoginUidUtil private constructor() {
-    companion object {
-        private val logger: Logger = LoggerFactory.getLogger(CurrentLoginUidUtil::class.java)
-        fun getCurrentLoginUid(): UID {
-            val securityContext = SecurityContextHolder.getContext()
-            val authentication = securityContext.authentication
-            isAuthentication(authentication)
-            return if (isAnonymousUser(authentication)) {
-                getAnonymousUid(authentication)
-            } else {
-                val uidDetailUser = getUidDetailUser(authentication)
-                getUid(uidDetailUser)
-            }
+object CurrentLoginUidUtil {
+    private val logger: Logger = LoggerFactory.getLogger(CurrentLoginUidUtil::class.java)
+    fun getCurrentLoginUid(): UID {
+        val securityContext = SecurityContextHolder.getContext()
+        val authentication = securityContext.authentication
+        isAuthentication(authentication)
+        return if (isAnonymousUser(authentication)) {
+            getAnonymousUid(authentication)
+        } else {
+            val uidDetailUser = getUidDetailUser(authentication)
+            getUid(uidDetailUser)
         }
-
-        private fun isAuthentication(authentication: Authentication?) {
-            if (authentication == null) {
-                throw DataNotFoundException("Current caller is not authentication.")
-            }
-        }
-
-        private fun isAnonymousUser(authentication: Authentication): Boolean =
-            authentication is AnonymousAuthenticationToken
-
-        private fun getAnonymousUid(authentication: Authentication): UID {
-            return when (authentication) {
-                is SystemAuthenticationToken -> {
-                    val (uid) = authentication.principal as UidDetailUser
-                    return uid
-                }
-
-                is AnonymousAuthenticationToken -> {
-                    UID(authentication.toString())
-                }
-
-                else -> {
-                    throw DataNotFoundException("")
-                }
-            }
-        }
-
-        private fun getUidDetailUser(authentication: Authentication) = authentication.principal as UidDetailUser
-
-        private fun getUid(uidDetailUser: UidDetailUser) = uidDetailUser.uid
-
-        fun newSystemAuthenticationToken(): SystemAuthenticationToken {
-            val systemUserDetail = createSystemUserDetail()
-            return SystemAuthenticationToken(
-                systemUserDetail.hashCode().toString(), systemUserDetail, systemUserDetail.authorities
-            )
-        }
-
-        private fun createSystemUserDetail(): UidDetailUser {
-            val userDetails =
-                User.withUsername("System User").password("").authorities(SimpleGrantedAuthority("SYSTEM")).build()
-            return UidDetailUser(UID.systemUID(), userDetails)
-        }
-
     }
+
+    private fun isAuthentication(authentication: Authentication?) {
+        if (authentication == null) {
+            throw DataNotFoundException("Current caller is not authentication.")
+        }
+    }
+
+    private fun isAnonymousUser(authentication: Authentication): Boolean =
+        authentication is AnonymousAuthenticationToken
+
+    private fun getAnonymousUid(authentication: Authentication): UID {
+        return when (authentication) {
+            is SystemAuthenticationToken -> {
+                val (uid) = authentication.principal as UidDetailUser
+                return uid
+            }
+
+            is AnonymousAuthenticationToken -> {
+                UID(authentication.toString())
+            }
+
+            else -> {
+                throw DataNotFoundException("")
+            }
+        }
+    }
+
+    private fun getUidDetailUser(authentication: Authentication) = authentication.principal as UidDetailUser
+
+    private fun getUid(uidDetailUser: UidDetailUser) = uidDetailUser.uid
+
+    fun newSystemAuthenticationToken(): SystemAuthenticationToken {
+        val systemUserDetail = createSystemUserDetail()
+        return SystemAuthenticationToken(
+            systemUserDetail.hashCode().toString(), systemUserDetail, systemUserDetail.authorities
+        )
+    }
+
+    private fun createSystemUserDetail(): UidDetailUser {
+        val userDetails =
+            User.withUsername("System User").password("").authorities(SimpleGrantedAuthority("SYSTEM")).build()
+        return UidDetailUser(UID.systemUID(), userDetails)
+    }
+
 }

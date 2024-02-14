@@ -34,12 +34,12 @@ class AccountService(
 ) : AccountFindable, AccountManager {
     @Transactional
     override fun findAllAccount(pageable: Pageable): Page<AccountDto> {
-        return accountRepository.findAll(pageable).map { AccountDto.from(it) }
+        return accountRepository.findAll(pageable).map { it.toAccountDto() }
     }
 
     override fun findByUsername(username: String): AccountDto? {
         val account = accountRepository.findByUsername(username)
-        return AccountDto.from(account)
+        return account?.toAccountDto()
     }
 
     override fun existUid(uid: UID): Boolean {

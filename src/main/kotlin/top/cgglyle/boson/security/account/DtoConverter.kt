@@ -16,24 +16,21 @@
 
 package top.cgglyle.boson.security.account
 
-import top.cgglyle.boson.security.authorization.RID
-import java.io.Serializable
-import java.time.Instant
+import top.cgglyle.boson.security.account.domain.Account
 
-/**
- * DTO for {@link top.cgglyle.boson.security.account.domain.Account}
- */
-data class AccountDto(
-    val id: Long,
-    val createdBy: String,
-    val createdDate: Instant,
-    val lastModifiedBy: String?,
-    val lastModifiedDate: Instant?,
-    val uid: String,
-    val username: String,
-    val email: String,
-    val roles: MutableSet<RID>,
-    val accountExpired: Boolean,
-    val accountLocked: Boolean,
-    val enable: Boolean,
-) : Serializable
+fun Account.toAccountDto(): AccountDto {
+    return AccountDto(
+        id,
+        createdBy.value,
+        createdDate,
+        lastModifiedBy?.value,
+        lastModifiedDate,
+        uid.value,
+        username,
+        email,
+        roles,
+        expired,
+        locked,
+        enable
+    )
+}
