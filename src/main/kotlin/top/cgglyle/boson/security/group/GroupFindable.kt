@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+
+interface GroupFindable {
+    fun findAllGroup(pageable: Pageable): Page<GroupDto>
+    fun findGroup(name: String): GroupDto?
 }

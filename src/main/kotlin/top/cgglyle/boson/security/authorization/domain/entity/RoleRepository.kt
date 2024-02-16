@@ -28,4 +28,6 @@ interface RoleRepository : AbstractIDRepository<RoleEntity> {
 
     fun getByRid(rid: RID): RoleDto
 
+
+    fun existsByRid(rid: RID): Boolean
 }

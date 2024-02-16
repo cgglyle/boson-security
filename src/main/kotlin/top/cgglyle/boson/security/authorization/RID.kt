@@ -25,11 +25,17 @@ import java.util.*
  */
 @Embeddable
 data class RID(
-    val id: String,
+    val value: String,
 ) : Serializable {
+
+    override fun toString(): String {
+        return "RID('$value')"
+    }
+
     companion object {
         fun randomRID(): RID {
             return RID(UUID.randomUUID().toString())
         }
     }
+
 }

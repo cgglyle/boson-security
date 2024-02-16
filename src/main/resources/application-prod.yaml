@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    open-in-view: false
+  mvc:
+    problem-details:
+      enabled: true
+  modulith:
+    events:
+      jdbc:
+        schema-initialization:
+          enabled: true
+
+springdoc:
+  swagger-ui:
+    csrf:
+      enabled: true
+    enabled: false
+  api-docs:
+    enabled: false

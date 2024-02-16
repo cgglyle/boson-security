@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
+import top.cgglyle.boson.security.authorization.RID
+import top.cgglyle.boson.security.common.UID
+
+
+interface GroupManager {
+    fun createGroup(query: CreateGroupQuery)
+    fun removeGroup(gid: GID)
+    fun addAccount(gid: GID, uid: UID)
+    fun deletedAccount(gid: GID, uid: UID)
+    fun addRole(gid: GID, rid: RID)
+    fun deletedRole(gid: GID, rid: RID)
 }

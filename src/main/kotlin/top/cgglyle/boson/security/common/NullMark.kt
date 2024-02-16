@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.common
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
+object NullMark {
+    const val NULL: String = "NULL"
 }
+

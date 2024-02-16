@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
-}
+import jakarta.validation.constraints.NotBlank
+import org.hibernate.validator.constraints.Length
+import top.cgglyle.boson.security.common.NullMark
+
+data class CreateGroupQuery(
+    @field:NotBlank
+    @field:Length(max = 64)
+    val name: String,
+    @field:Length(max = 64)
+    val description: String = NullMark.NULL,
+)

@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group.domain.entity;
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
+import top.cgglyle.boson.security.common.AbstractIDRepository
+import top.cgglyle.boson.security.group.GID
+
+interface GroupRepository : AbstractIDRepository<Group> {
+
+
+    fun findByName(name: String): Group?
+
+
+    fun deleteByGid(gid: GID): Long
+
+
+    fun findByGid(gid: GID): Group?
 }

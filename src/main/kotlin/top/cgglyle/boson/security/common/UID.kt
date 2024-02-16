@@ -24,6 +24,10 @@ import java.util.*
 data class UID(
     val value: String
 ) : Serializable {
+    override fun toString(): String {
+        return "UID('$value')"
+    }
+
     companion object {
         fun randomUID(): UID {
             return UID(UUID.randomUUID().toString())
@@ -41,4 +45,5 @@ data class UID(
             return UID("[SYSTEM DEFAULT UID] ${UUID.randomUUID()}")
         }
     }
+
 }

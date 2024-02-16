@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
-
 /**
- * @author: Lyle Liu
+ * This package is used to manage accounts.
  */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
-}
+package top.cgglyle.boson.security.account;

@@ -29,4 +29,5 @@ interface AccountFindable {
     fun existUid(uid: UID): Boolean
     fun existUsername(username: String): Boolean
     fun existsByUsernameOrEmail(username: String?, email: String?): Boolean
+    fun existsOrThrowException(uid: UID)
 }

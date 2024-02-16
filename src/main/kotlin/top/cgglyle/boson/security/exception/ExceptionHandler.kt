@@ -17,6 +17,7 @@
 package top.cgglyle.boson.security.exception
 
 import jakarta.validation.ConstraintViolationException
+import org.slf4j.LoggerFactory
 import org.springframework.http.*
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -32,6 +33,7 @@ class ExceptionHandler() : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun constraintViolationException(e: ConstraintViolationException, request: WebRequest): ProblemDetail {
+        logger.warn("Constrain violation exception: ", e)
         val constraintViolations = e.constraintViolations
         val messages = constraintViolations.joinToString { "${it.propertyPath}: ${it.message}" }
         return createProblemDetail(
@@ -41,6 +43,7 @@ class ExceptionHandler() : ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(Exception::class)
     fun undefinedException(e: Exception, request: WebRequest): ProblemDetail {
+        logger.error("System Exception: ", e)
         return createProblemDetail(
             e, HttpStatus.INTERNAL_SERVER_ERROR, "Oops! System Error.", null, null, request
         )
@@ -57,5 +60,9 @@ class ExceptionHandler() : ResponseEntityExceptionHandler() {
         val problemDetail =
             createProblemDetail(ex, status, message.toString(), null, null, request)
         return super.handleExceptionInternal(ex, problemDetail, headers, status, request)
+    }
+
+    companion object {
+        val logger = LoggerFactory.getLogger(ExceptionHandler::class.java)
     }
 }

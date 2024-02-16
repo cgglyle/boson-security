@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group
+
+import java.io.Serializable
+import java.time.Instant
 
 /**
- * @author: Lyle Liu
+ * DTO for {@link top.cgglyle.boson.security.group.domain.entity.Group}
  */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
-}
+data class GroupDto(
+    val createdBy: String,
+    val createdDate: Instant,
+    val lastModifiedBy: String?,
+    val lastModifiedDate: Instant?,
+    val name: String,
+    val description: String?,
+    val gid: String,
+    val uidList: Set<String>,
+    val ridList: Set<String>,
+) : Serializable

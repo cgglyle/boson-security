@@ -24,6 +24,7 @@ import top.cgglyle.boson.security.account.*
 import top.cgglyle.boson.security.account.domain.Account
 import top.cgglyle.boson.security.account.domain.AccountRepository
 import top.cgglyle.boson.security.common.UID
+import top.cgglyle.boson.security.exception.DataNotFoundException
 
 /**
  * @author: Lyle Liu
@@ -53,6 +54,9 @@ class AccountService(
     override fun existsByUsernameOrEmail(username: String?, email: String?): Boolean {
         return accountRepository.existsByUsernameOrEmail(username, email)
     }
+
+    override fun existsOrThrowException(uid: UID) =
+        if (existUid(uid)) Unit else throw DataNotFoundException("Uid: $uid not found!")
 
     override fun save(accountDto: CreateAccountDto): UID {
         val newAccount = Account(

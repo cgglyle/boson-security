@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
+import top.cgglyle.boson.security.group.domain.entity.Group
+
+fun Group.toDto(): GroupDto {
+    return GroupDto(
+        createdBy.value,
+        createdDate,
+        lastModifiedBy?.value,
+        lastModifiedDate,
+        name,
+        description,
+        gid.value,
+        getUidList().map { it.value }.toSet(),
+        getRidList().map { it.value }.toSet(),
+    )
 }

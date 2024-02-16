@@ -34,7 +34,7 @@ class RoleService(
     }
 
     override fun getByRid(rid: RID): RoleDto {
-        return findByRid(rid) ?: throw DataNotFoundException("rid: '$rid' is not found!")
+        return findByRid(rid) ?: throw DataNotFoundException("Rid: '$rid' is not found!")
     }
 
     override fun getRIDByRoleCode(roleCode: String): RID {
@@ -46,6 +46,11 @@ class RoleService(
     override fun count(): Long {
         return roleRepository.count()
     }
+
+    override fun exists(rid: RID): Boolean = roleRepository.existsByRid(rid)
+    override fun existsOrThrowException(rid: RID) =
+        if (exists(rid)) Unit else throw DataNotFoundException("Rid: $rid not found.")
+
 
     override fun create(role: CreateRoleDto) {
         roleRepository.save(RoleEntity(roleName = role.roleName))

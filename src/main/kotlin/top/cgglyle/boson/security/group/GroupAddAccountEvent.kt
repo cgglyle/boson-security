@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
-}
+import top.cgglyle.boson.security.common.DomainEvent
+import top.cgglyle.boson.security.common.UID
+
+data class GroupAddAccountEvent(
+    val gid: GID, val uid: UID
+) : DomainEvent()

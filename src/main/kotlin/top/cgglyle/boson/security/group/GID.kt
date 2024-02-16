@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package top.cgglyle.boson.security.authorization
+package top.cgglyle.boson.security.group
 
-/**
- * @author: Lyle Liu
- */
-interface RoleFindable {
-    fun findByRid(rid: RID): RoleDto?
-    fun getByRid(rid: RID): RoleDto
-    fun getRIDByRoleCode(roleCode: String): RID
-    fun count(): Long
-    fun exists(rid: RID): Boolean
-    fun existsOrThrowException(rid: RID)
+import jakarta.persistence.Embeddable
+import java.util.*
+
+@Embeddable
+data class GID(
+    val value: String,
+) {
+
+    companion object {
+        fun randomGID(): GID {
+            return GID(UUID.randomUUID().toString())
+        }
+    }
+
+    override fun toString(): String {
+        return "GID('$value')"
+    }
 }
