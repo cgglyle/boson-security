@@ -10,6 +10,7 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import top.cgglyle.boson.security.account.AccountFindable
+import top.cgglyle.boson.security.authorization.RoleFindable
 import top.cgglyle.boson.security.common.UID
 import top.cgglyle.boson.security.exception.DataNotFoundException
 import top.cgglyle.boson.security.group.GID
@@ -21,11 +22,14 @@ class GroupAddRoleQueryServiceTest {
     @InjectMockKs
     lateinit var groupService: GroupService
 
-    @MockK
+    @MockK(relaxed = true)
     lateinit var accountFindable: AccountFindable
 
     @MockK
     lateinit var groupRepository: GroupRepository
+
+    @MockK
+    lateinit var roleFindable: RoleFindable
 
     @Test
     fun findAllGroup() {
@@ -49,7 +53,7 @@ class GroupAddRoleQueryServiceTest {
         val gid = mockk<GID>()
         val uid = mockk<UID>()
 
-        every { accountFindable.existUid(any()) }.returns(true)
+        every { accountFindable.existsOrThrowException(any()) }.returns(Unit)
         every { groupRepository.findByGid(any()) }.returns(mockk(relaxed = true))
 
         // when
@@ -64,7 +68,7 @@ class GroupAddRoleQueryServiceTest {
         val gid = mockk<GID>()
         val uid = mockk<UID>()
 
-        every { accountFindable.existUid(any()) }.returns(false)
+        every { accountFindable.existsOrThrowException(any()) }.throws(DataNotFoundException())
         every { groupRepository.findByGid(any()) }.returns(mockk(relaxed = true))
 
         // when
@@ -79,7 +83,7 @@ class GroupAddRoleQueryServiceTest {
         val gid = mockk<GID>()
         val uid = mockk<UID>()
 
-        every { accountFindable.existUid(any()) }.returns(true)
+        every { accountFindable.existsOrThrowException(any()) }.returns(Unit)
         every { groupRepository.findByGid(any()) }.returns(null)
 
         // when
