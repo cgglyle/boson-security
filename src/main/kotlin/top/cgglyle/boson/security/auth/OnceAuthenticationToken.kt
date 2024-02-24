@@ -17,9 +17,7 @@
 package top.cgglyle.boson.security.auth
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken
-import org.springframework.security.core.GrantedAuthority
 
-class SystemAuthenticationToken(
-    key: String, principal: Any,
-    authorities: MutableCollection<out GrantedAuthority>?
-) : AnonymousAuthenticationToken(key, principal, authorities)
+class OnceAuthenticationToken(
+    userDetails: UidDetailUser,
+) : AnonymousAuthenticationToken(userDetails.hashCode().toString(), userDetails, userDetails.authorities)

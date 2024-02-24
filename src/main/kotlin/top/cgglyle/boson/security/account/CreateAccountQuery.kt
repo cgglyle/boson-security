@@ -21,6 +21,7 @@ import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import top.cgglyle.boson.security.common.Expiration
+import top.cgglyle.boson.security.common.UID
 
 data class CreateAccountQuery(
     @Max(64)
@@ -36,4 +37,5 @@ data class CreateAccountQuery(
     val locked: Boolean = false,
     val accountExpiration: Expiration = Expiration.NEVER,
     val credentialExpiration: Expiration = Expiration.NEVER,
+    val uid: UID? = null,
 )

@@ -31,13 +31,15 @@ import java.util.*
 
 @Entity
 @Table(name = "sys_account")
-class Account(command: CreateAccountCommand) : AbstractModifiedAuditingEntity() {
+class Account(
+    command: CreateAccountCommand,
     @Embedded
     @AttributeOverride(
         name = "value",
         column = Column(name = "uid", updatable = false, nullable = false, unique = true)
     )
     val uid: UID = UID.randomUID()
+) : AbstractModifiedAuditingEntity() {
 
     @NotBlank
     @Length(max = 64)

@@ -21,6 +21,7 @@ import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Length
 import top.cgglyle.boson.security.authorization.RID
 import top.cgglyle.boson.security.common.Expiration
+import top.cgglyle.boson.security.common.UID
 import java.io.Serializable
 
 /**
@@ -34,5 +35,6 @@ data class CreateAccountDto(
     val roles: Set<RID> = mutableSetOf(),
     val expiration: Expiration = Expiration.NEVER,
     val locked: Boolean = false,
-    val enable: Boolean = true
+    val enable: Boolean = true,
+    val uid: UID? = null,
 ) : Serializable

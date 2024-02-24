@@ -73,7 +73,8 @@ class UserService(
                 rids,
                 query.accountExpiration,
                 query.locked,
-                query.enable
+                query.enable,
+                query.uid,
             )
         )
 

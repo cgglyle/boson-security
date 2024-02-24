@@ -26,6 +26,7 @@ import top.cgglyle.boson.security.account.domain.AccountRepository
 import top.cgglyle.boson.security.common.UID
 import top.cgglyle.boson.security.common.UsernameFindable
 import top.cgglyle.boson.security.exception.DataNotFoundException
+import top.cgglyle.boson.security.exception.IllegalArgumentException
 
 /**
  * @author: Lyle Liu
@@ -65,16 +66,9 @@ class AccountService(
         if (existUid(uid)) Unit else throw DataNotFoundException("Uid: $uid not found!")
 
     override fun save(accountDto: CreateAccountDto): UID {
-        val newAccount = Account(
-            CreateAccountCommand(
-                accountDto.username,
-                accountDto.email,
-                accountDto.roles,
-                accountDto.expiration,
-                accountDto.locked,
-                accountDto.enable
-            )
-        )
+        val newAccount = if (accountDto.uid == null) {
+            createAccount(accountDto)
+        } else createAccountUseUid(accountDto)
         val account = accountRepository.save(newAccount)
         return account.uid
     }
@@ -85,5 +79,35 @@ class AccountService(
 
     override fun findNameByUid(uid: UID): String? {
         return findByUid(uid)?.username
+    }
+
+    private fun createAccount(accountDto: CreateAccountDto): Account {
+        return Account(
+            CreateAccountCommand(
+                accountDto.username,
+                accountDto.email,
+                accountDto.roles,
+                accountDto.expiration,
+                accountDto.locked,
+                accountDto.enable
+            )
+        )
+    }
+
+    private fun createAccountUseUid(accountDto: CreateAccountDto): Account {
+        if (accountDto.uid == null) {
+            throw IllegalArgumentException("uid must not be null!")
+        }
+        return Account(
+            CreateAccountCommand(
+                accountDto.username,
+                accountDto.email,
+                accountDto.roles,
+                accountDto.expiration,
+                accountDto.locked,
+                accountDto.enable
+            ),
+            accountDto.uid,
+        )
     }
 }

@@ -51,13 +51,13 @@ object CurrentLoginUidUtil {
 
     private fun getAnonymousUid(authentication: Authentication): UID {
         return when (authentication) {
-            is SystemAuthenticationToken -> {
+            is OnceAuthenticationToken -> {
                 val (uid) = authentication.principal as UidDetailUser
                 return uid
             }
 
             is AnonymousAuthenticationToken -> {
-                UID(authentication.toString())
+                UID(authentication.name)
             }
 
             else -> {
@@ -70,11 +70,9 @@ object CurrentLoginUidUtil {
 
     private fun getUid(uidDetailUser: UidDetailUser) = uidDetailUser.uid
 
-    fun newSystemAuthenticationToken(): SystemAuthenticationToken {
+    fun newSystemAuthenticationToken(): OnceAuthenticationToken {
         val systemUserDetail = createSystemUserDetail()
-        return SystemAuthenticationToken(
-            systemUserDetail.hashCode().toString(), systemUserDetail, systemUserDetail.authorities
-        )
+        return OnceAuthenticationToken(systemUserDetail)
     }
 
     private fun createSystemUserDetail(): UidDetailUser {
