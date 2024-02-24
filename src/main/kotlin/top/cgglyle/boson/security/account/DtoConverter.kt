@@ -22,8 +22,10 @@ fun Account.toAccountDto(): AccountDto {
     return AccountDto(
         id,
         createdBy.value,
+        createdUsername,
         createdDate,
         lastModifiedBy?.value,
+        lastModifiedUsername,
         lastModifiedDate,
         uid.value,
         username,

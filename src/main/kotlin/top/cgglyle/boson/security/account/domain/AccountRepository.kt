@@ -32,4 +32,7 @@ interface AccountRepository : AbstractIDRepository<Account> {
 
 
     fun deleteByUid(uid: UID): Long
+
+
+    fun findByUid(uid: UID): Account?
 }

@@ -24,6 +24,7 @@ import top.cgglyle.boson.security.account.*
 import top.cgglyle.boson.security.account.domain.Account
 import top.cgglyle.boson.security.account.domain.AccountRepository
 import top.cgglyle.boson.security.common.UID
+import top.cgglyle.boson.security.common.UsernameFindable
 import top.cgglyle.boson.security.exception.DataNotFoundException
 
 /**
@@ -32,7 +33,7 @@ import top.cgglyle.boson.security.exception.DataNotFoundException
 @Service
 class AccountService(
     private val accountRepository: AccountRepository
-) : AccountFindable, AccountManager {
+) : AccountFindable, AccountManager, UsernameFindable {
     @Transactional
     override fun findAllAccount(pageable: Pageable): Page<AccountDto> {
         return accountRepository.findAll(pageable).map { it.toAccountDto() }
@@ -40,6 +41,11 @@ class AccountService(
 
     override fun findByUsername(username: String): AccountDto? {
         val account = accountRepository.findByUsername(username)
+        return account?.toAccountDto()
+    }
+
+    override fun findByUid(uid: UID): AccountDto? {
+        val account = accountRepository.findByUid(uid)
         return account?.toAccountDto()
     }
 
@@ -75,5 +81,9 @@ class AccountService(
 
     override fun delete(uid: UID) {
         accountRepository.deleteByUid(uid)
+    }
+
+    override fun findNameByUid(uid: UID): String? {
+        return findByUid(uid)?.username
     }
 }

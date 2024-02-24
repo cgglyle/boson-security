@@ -29,6 +29,9 @@ abstract class AbstractModifiedAuditingEntity : AbstractAuditingEntity() {
     @AttributeOverride(name = "value", column = Column(name = "last_modified_by"))
     var lastModifiedBy: UID? = null
 
+    @jakarta.persistence.Transient
+    var lastModifiedUsername: String? = null
+
     @LastModifiedDate
     @Column(name = "last_modified_date")
     var lastModifiedDate: Instant? = null

@@ -26,8 +26,10 @@ import java.time.Instant
 data class AccountDto(
     val id: Long,
     val createdBy: String,
+    val createdUsername: String,
     val createdDate: Instant,
     val lastModifiedBy: String?,
+    val lastModifiedUsername: String?,
     val lastModifiedDate: Instant?,
     val uid: String,
     val username: String,

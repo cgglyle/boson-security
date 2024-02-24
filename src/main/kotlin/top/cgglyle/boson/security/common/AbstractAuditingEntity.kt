@@ -26,7 +26,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
 
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener::class)
+@EntityListeners(AuditingEntityListener::class, AuditingUsernameListener::class)
 abstract class AbstractAuditingEntity(
     @CreatedBy
     @AttributeOverride(
@@ -35,7 +35,11 @@ abstract class AbstractAuditingEntity(
     )
     var createdBy: UID = UID.defaultUID(),
 
+
     @CreatedDate
     @Column(name = "created_date", updatable = false, nullable = false)
     var createdDate: Instant = Instant.now()
-) : AbstractIDEntity()
+) : AbstractIDEntity() {
+    @jakarta.persistence.Transient
+    var createdUsername: String = "NULL"
+}
